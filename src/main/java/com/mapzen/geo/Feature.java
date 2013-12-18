@@ -1,12 +1,30 @@
 package com.mapzen.geo;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Feature {
     private HashMap<String, String> properties = new HashMap<String, String>();
     private Geometry geometry = new Geometry();
 
     public Feature() {
+    }
+
+    public void buildFromJSON(JSONObject json) throws JSONException {
+        JSONObject properties = json.getJSONObject("properties");
+        Iterator<String> iterator = properties.keys();
+        while(iterator.hasNext()) {
+            String key = iterator.next();
+            setProperty(key, properties.getString(key));
+        }
+        JSONObject geometry = json.getJSONObject("geometry");
+        JSONArray coordinates = geometry.getJSONArray("coordinates");
+        setLat(coordinates.getDouble(1));
+        setLon(coordinates.getDouble(0));
     }
 
     public Geometry getGeometry() {
