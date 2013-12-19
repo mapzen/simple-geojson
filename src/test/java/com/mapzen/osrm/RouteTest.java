@@ -145,16 +145,17 @@ public class RouteTest {
         // sample geometry taken from:
         // https://developers.google.com/maps/documentation/utilities/polylinealgorithm?csw=1
         // Points: (38.5, -120.2), (40.7, -120.95), (43.252, -126.453)
+        // persision is different so that's why the numbers are wonkey
         // "_p~iF~ps|U_ulLnnqC_mqNvxq`@\
         ArrayList<double[]> list = route.getGeometry();
 
-        assert(list.get(0)[0] == 38.5);
-        assert(list.get(0)[1] == -120.2);
+        assert(list.get(0)[0] == 3.85);
+        assert(list.get(0)[1] == -12.02);
 
-        assert(list.get(1)[0] == 40.7);
-        assert(list.get(1)[1] == -120.95);
+        assert(list.get(1)[0] == 4.07);
+        assert(list.get(1)[1] == -12.095);
 
-        assert(list.get(2)[0] == 43.252);
-        assert(list.get(2)[1] == -126.453);
+        assert(list.get(2)[0] == 4.3252);
+        assert(list.get(2)[1] == -12.6453);
     }
 }

@@ -56,8 +56,8 @@ public class Route {
             } while (b >= 0x20);
             int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
             lng += dlng;
-            double x = (double) lat / 1E5;
-            double y = (double) lng / 1E5;
+            double x = (double) lat / 1E6;
+            double y = (double) lng / 1E6;
             double[] pair = {x, y};
             poly.add(pair);
         }
