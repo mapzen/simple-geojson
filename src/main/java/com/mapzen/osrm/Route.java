@@ -13,6 +13,10 @@ public class Route {
         jsonObject = new JSONObject(jsonString);
     }
 
+    public Route(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
+    }
+
     public int getTotalDistance() {
         return getSumary().getInt("total_distance");
     }
