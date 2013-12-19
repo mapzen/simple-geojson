@@ -3,6 +3,8 @@ package com.mapzen.osrm;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 public class RouteTest {
     String routeJson =  "{\n" +
             "    \"alternative_geometries\": [],\n" +
@@ -22,7 +24,10 @@ public class RouteTest {
             "            \"WEtmAdIPAADHAAAAjAAAAEceNbcnvuI_NaZsAkw1l_s\"\n" +
             "        ]\n" +
             "    },\n" +
-            "    \"route_geometry\": \"gmvplAfl}blCvv@g|AcW}WgBoB}FkGmF{FcCmCwUgVu`@}a@ge@}_@od@k^ud@m^sd@k^ud@m^ud@i^qd@o^sd@m^ad@_^ce@__@yd@i^sd@i^_e@q^id@g^sd@m^od@e^ud@m^ud@k^ys@yk@ke@uXcj@y[cXp_A\",\n" +
+            // sample geometry taken from:
+            // https://developers.google.com/maps/documentation/utilities/polylinealgorithm?csw=1
+            // Points: (38.5, -120.2), (40.7, -120.95), (43.252, -126.453)
+            "    \"route_geometry\": \"_p~iF~ps|U_ulLnnqC_mqNvxq`@\",\n" +
             "    \"route_instructions\": [\n" +
             "        [\n" +
             "            \"10\",\n" +
@@ -128,6 +133,28 @@ public class RouteTest {
     @Test
     public void hasRouteInstruction() throws Exception {
         assert(route.getRouteInstruction() instanceof Instruction);
+    }
 
+    @Test
+    public void hasGeometry() throws Exception {
+        assert(route.getGeometry() != null);
+    }
+
+    @Test
+    public void hasDecodedGeometry() throws Exception {
+        // sample geometry taken from:
+        // https://developers.google.com/maps/documentation/utilities/polylinealgorithm?csw=1
+        // Points: (38.5, -120.2), (40.7, -120.95), (43.252, -126.453)
+        // "_p~iF~ps|U_ulLnnqC_mqNvxq`@\
+        ArrayList<double[]> list = route.getGeometry();
+
+        assert(list.get(0)[0] == 38.5);
+        assert(list.get(0)[1] == -120.2);
+
+        assert(list.get(1)[0] == 40.7);
+        assert(list.get(1)[1] == -120.95);
+
+        assert(list.get(2)[0] == 43.252);
+        assert(list.get(2)[1] == -126.453);
     }
 }
