@@ -30,14 +30,14 @@ public class RouteTest {
             "    \"route_geometry\": \"_p~iF~ps|U_ulLnnqC_mqNvxq`@\",\n" +
             "    \"route_instructions\": [\n" +
             "        [\n" +
-            "            \"10\",\n" +
-            "            \"19th Street\",\n" +
-            "            160,\n" +
-            "            0,\n" +
-            "            0,\n" +
-            "            \"160m\",\n" +
-            "            \"SE\",\n" +
-            "            128\n" +
+            "            \"10\",\n" + // turn instruction
+            "            \"19th Street\",\n" + // way
+            "            160,\n" + // length in meters
+            "            0,\n" + // position?
+            "            0,\n" + // time in seconds
+            "            \"160m\",\n" + // length with unit
+            "            \"SE\",\n" + //earth direction
+            "            128\n" + // azimuth
             "        ],\n" +
             "        [\n" +
             "            \"7\",\n" +
