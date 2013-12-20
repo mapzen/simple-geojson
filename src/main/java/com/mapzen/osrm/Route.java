@@ -26,7 +26,8 @@ public class Route {
     }
 
     public Instruction getRouteInstruction() {
-        return new Instruction(new JSONArray());
+        JSONArray jsonArray = new JSONArray("[1,2,3,4,5,6,7,8]");
+        return new Instruction(jsonArray);
     }
 
     public ArrayList<double[]> getGeometry() {
