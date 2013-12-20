@@ -23,8 +23,10 @@ public class Instruction {
     public static String EnterAgainstAllowedDirection = "Enter Against Allowed Direction"; // 16;
     public static String LeaveAgainstAllowedDirection = "Leave Against Allowed Direction"; // 17;
 
+    public static int METERS_IN_MILE = 1609;
+
     private JSONArray json;
-    private int turn;
+    private int turn, distance;
 
     public Instruction(JSONArray json) {
         if (json.length() < 8) {
@@ -32,6 +34,7 @@ public class Instruction {
         }
         this.json = json;
         setTurnInstruction(json.getInt(0));
+        setDistance(json.getInt(2));
     }
 
     public void setTurnInstruction(int turn) {
@@ -55,8 +58,16 @@ public class Instruction {
         return json.getString(1);
     }
 
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
     public int getDistance() {
-        return json.getInt(2);
+        return distance;
+    }
+
+    public int getDistanceInMiles() {
+        return distance / METERS_IN_MILE;
     }
 
     public String getDirection() {

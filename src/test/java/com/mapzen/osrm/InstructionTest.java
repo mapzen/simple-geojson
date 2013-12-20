@@ -11,10 +11,10 @@ public class InstructionTest {
         String json = "        [\n" +
                 "            \"10\",\n" +
                 "            \"19th Street\",\n" +
-                "            160,\n" +
+                "            1609,\n" +
                 "            0,\n" +
                 "            0,\n" +
-                "            \"160m\",\n" +
+                "            \"1609m\",\n" +
                 "            \"SE\",\n" +
                 "            128\n" +
                 "        ]\n";
@@ -162,7 +162,14 @@ public class InstructionTest {
 
     @Test
     public void hasCorrectDistance() throws Exception {
-        assert(instruction.getDistance() == 160);
+        assert(instruction.getDistance() == 1609);
+    }
+
+    @Test
+    public void hasDistanceInMiles() throws Exception {
+        assert(instruction.getDistanceInMiles() == 1);
+        instruction.setDistance(1609 * 4);
+        assert(instruction.getDistanceInMiles() == 4);
     }
 
     @Test
