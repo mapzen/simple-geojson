@@ -27,6 +27,7 @@ public class Instruction {
 
     private JSONArray json;
     private int turn, distance;
+    private double[] point = {};
 
     public Instruction(JSONArray json) {
         if (json.length() < 8) {
@@ -72,5 +73,13 @@ public class Instruction {
 
     public String getDirection() {
         return json.getString(6);
+    }
+
+    public double[] getPoint() {
+        return point;
+    }
+
+    public void setPoint(double[] point) {
+        this.point = point;
     }
 }

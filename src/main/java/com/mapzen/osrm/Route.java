@@ -7,6 +7,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Route {
+    private ArrayList<double[]> poly = null;
+    private ArrayList<Instruction> turnByTurn = null;
     JSONObject jsonObject;
 
     public Route() {
@@ -32,13 +34,51 @@ public class Route {
         return getSumary().getInt("total_time");
     }
 
-    public Instruction getRouteInstruction() {
-        JSONArray jsonArray = new JSONArray("[1,2,3,4,5,6,7,8]");
-        return new Instruction(jsonArray);
-    }
+    public ArrayList<Instruction> getRouteInstructions() {
+        if(turnByTurn == null) {
+            JSONArray instructions = jsonObject.getJSONArray("route_instructions");
+            turnByTurn = new ArrayList<Instruction>();
+            for(int i = 0; i < instructions.length(); i++) {
+                Instruction instruction = new Instruction(instructions.getJSONArray(i));
+                turnByTurn.add(instruction);
+            }
 
-    public JSONArray getRouteInstructions() {
-        return jsonObject.getJSONArray("route_instructions");
+            double[] pre = null;
+            double distance = 0;
+            double totalDistance = 0;
+            double[] markerPoint = {0, 0};
+
+            int marker = 1;
+            ArrayList<double[]> geometry = getGeometry();
+            int size = geometry.size();
+            // set initial point to first instruction
+            turnByTurn.get(0).setPoint(geometry.get(0));
+            for(double[] f: geometry) {
+                if(marker == turnByTurn.size()) {
+                    continue;
+                }
+                Instruction instruction = turnByTurn.get(marker);
+                if(pre != null) {
+                    distance = distanceBetweenPoints(new double[]{pre[0], pre[1]}, new double[]{f[0], f[1]});
+                    totalDistance += distance;
+                }
+                // this needs the previous distance marker hence minus one
+                if(Math.floor(totalDistance) > turnByTurn.get(marker-1).getDistance()) {
+                    instruction.setPoint(markerPoint);
+                    marker++;
+                    totalDistance = distance;
+                }
+                markerPoint = new double[]{f[0], f[1]};
+
+                pre = f;
+
+                // setting the last one to the destination
+                if(--size == 0) {
+                    turnByTurn.get(marker).setPoint(markerPoint);
+                }
+            }
+        }
+        return turnByTurn;
     }
 
     public ArrayList<double[]> getGeometry() {
@@ -50,38 +90,40 @@ public class Route {
     }
 
     private ArrayList<double[]> decodePolyline(String encoded) {
-        ArrayList<double[]> poly = new ArrayList<double[]>();
-        int index = 0, len = encoded.length();
-        int lat = 0, lng = 0;
-        while (index < len) {
-            int b, shift = 0, result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lat += dlat;
+        if (poly == null) {
+            poly = new ArrayList<double[]>();
+            int index = 0, len = encoded.length();
+            int lat = 0, lng = 0;
+            while (index < len) {
+                int b, shift = 0, result = 0;
+                do {
+                    b = encoded.charAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+                lat += dlat;
 
-            shift = 0;
-            result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lng += dlng;
-            double x = (double) lat / 1E6;
-            double y = (double) lng / 1E6;
-            double[] pair = {x, y, 0};
-            if (!poly.isEmpty()) {
-                double[] lastElement = poly.get(poly.size()-1);
-                double distance = distanceBetweenPoints(pair, lastElement);
-                double totalDistance = distance + lastElement[2];
-                pair[2] = totalDistance;
+                shift = 0;
+                result = 0;
+                do {
+                    b = encoded.charAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+                lng += dlng;
+                double x = (double) lat / 1E6;
+                double y = (double) lng / 1E6;
+                double[] pair = {x, y, 0};
+                if (!poly.isEmpty()) {
+                    double[] lastElement = poly.get(poly.size()-1);
+                    double distance = distanceBetweenPoints(pair, lastElement);
+                    double totalDistance = distance + lastElement[2];
+                    pair[2] = totalDistance;
+                }
+                poly.add(pair);
             }
-            poly.add(pair);
         }
         return poly;
     }

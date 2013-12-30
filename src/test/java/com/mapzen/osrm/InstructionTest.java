@@ -181,4 +181,17 @@ public class InstructionTest {
     public void hasCorrectDirection() throws Exception {
         assert(instruction.getDirection().equals("SE"));
     }
+
+    @Test
+    public void hasPointCoordinates() throws Exception {
+        assert(instruction.getPoint() != null);
+    }
+
+    @Test
+    public void canSetCoordinates() throws Exception {
+        double[] expected = {3.3, 4.4};
+        instruction.setPoint(expected);
+        assert(instruction.getPoint() == expected);
+
+    }
 }

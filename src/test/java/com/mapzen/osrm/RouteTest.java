@@ -131,8 +131,9 @@ public class RouteTest {
     }
 
     @Test
-    public void hasRouteInstruction() throws Exception {
-        assert(route.getRouteInstruction() instanceof Instruction);
+    public void hasRouteInstructions() throws Exception {
+        ArrayList<Instruction> instructions = route.getRouteInstructions();
+        assert(instructions.size() == 4);
     }
 
     @Test
