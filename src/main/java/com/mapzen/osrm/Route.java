@@ -9,7 +9,8 @@ import java.util.ArrayList;
 public class Route {
     private ArrayList<double[]> poly = null;
     private ArrayList<Instruction> turnByTurn = null;
-    JSONObject jsonObject;
+    private JSONArray instructions;
+    private JSONObject jsonObject;
 
     public Route() {
     }
@@ -24,6 +25,7 @@ public class Route {
 
     public void setJsonObject(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
+        this.instructions = this.jsonObject.getJSONArray("route_instructions");
     }
 
     public int getTotalDistance() {
@@ -36,7 +38,6 @@ public class Route {
 
     public ArrayList<Instruction> getRouteInstructions() {
         if(turnByTurn == null) {
-            JSONArray instructions = jsonObject.getJSONArray("route_instructions");
             turnByTurn = new ArrayList<Instruction>();
             for(int i = 0; i < instructions.length(); i++) {
                 Instruction instruction = new Instruction(instructions.getJSONArray(i));
@@ -59,7 +60,7 @@ public class Route {
                 }
                 Instruction instruction = turnByTurn.get(marker);
                 if(pre != null) {
-                    distance = distanceBetweenPoints(new double[]{pre[0], pre[1]}, new double[]{f[0], f[1]});
+                    distance = f[2] - pre[2];
                     totalDistance += distance;
                 }
                 // this needs the previous distance marker hence minus one
@@ -69,9 +70,7 @@ public class Route {
                     totalDistance = distance;
                 }
                 markerPoint = new double[]{f[0], f[1]};
-
                 pre = f;
-
                 // setting the last one to the destination
                 if(--size == 0) {
                     turnByTurn.get(marker).setPoint(markerPoint);
