@@ -182,6 +182,67 @@ public class InstructionTest {
         assert(instruction.getDirection().equals("SE"));
     }
 
+    private Instruction getInstructionWithDirection(String dir) {
+        String json = "[10,\"\", 1609,0,0,\"1609m\",\"" + dir + "\",\"128\"]";
+        return new Instruction(new JSONArray(json));
+    }
+
+    @Test
+    public void hasNdirectionAngle() throws Exception {
+        Instruction i = getInstructionWithDirection("N");
+        assert(Float.compare(i.getDirectionAngle(), 0.0f) == 0);
+    }
+
+    @Test
+    public void hasNEdirectionAngle() throws Exception {
+        Instruction i = getInstructionWithDirection("NE");
+        assert(Float.compare(i.getDirectionAngle(), 315.0f) == 0);
+    }
+
+    @Test
+    public void hasEdirectionAngle() throws Exception {
+        Instruction i = getInstructionWithDirection("E");
+        assert(Float.compare(i.getDirectionAngle(), 270.0f) == 0);
+    }
+
+    @Test
+    public void hasSEdirectionAngle() throws Exception {
+        Instruction i = getInstructionWithDirection("SE");
+        assert(Float.compare(i.getDirectionAngle(), 225.0f) == 0);
+    }
+
+    @Test
+    public void hasSdirectionAngle() throws Exception {
+        Instruction i = getInstructionWithDirection("S");
+        assert(Float.compare(i.getDirectionAngle(), 180.0f) == 0);
+    }
+
+    @Test
+    public void hasSWdirectionAngle() throws Exception {
+        Instruction i = getInstructionWithDirection("SW");
+        assert(Float.compare(i.getDirectionAngle(), 135.0f) == 0);
+    }
+
+    @Test
+    public void hasWdirectionAngle() throws Exception {
+        Instruction i = getInstructionWithDirection("W");
+        assert(Float.compare(i.getDirectionAngle(), 90.0f) == 0);
+    }
+
+    @Test
+    public void hasNWdirectionAngle() throws Exception {
+        Instruction i = getInstructionWithDirection("NW");
+        assert(Float.compare(i.getDirectionAngle(), 45.0f) == 0);
+    }
+
+    @Test
+    public void hasDirectionAngle() throws Exception {
+        String json = "[10,\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
+        JSONArray jsonArray = new JSONArray(json);
+        instruction = new Instruction(jsonArray);
+        assert(instruction.getDirection().equals("SE"));
+    }
+
     @Test
     public void hasPointCoordinates() throws Exception {
         assert(instruction.getPoint() != null);
