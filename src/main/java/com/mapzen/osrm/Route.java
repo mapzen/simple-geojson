@@ -26,6 +26,7 @@ public class Route {
     public void setJsonObject(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
         this.instructions = this.jsonObject.getJSONArray("route_instructions");
+        initializeTurnByTurn();
     }
 
     public int getTotalDistance() {
@@ -36,45 +37,46 @@ public class Route {
         return getSumary().getInt("total_time");
     }
 
+    private void initializeTurnByTurn() {
+        turnByTurn = new ArrayList<Instruction>();
+        for(int i = 0; i < instructions.length(); i++) {
+            Instruction instruction = new Instruction(instructions.getJSONArray(i));
+            turnByTurn.add(instruction);
+        }
+    }
+
     public ArrayList<Instruction> getRouteInstructions() {
-        if(turnByTurn == null) {
-            turnByTurn = new ArrayList<Instruction>();
-            for(int i = 0; i < instructions.length(); i++) {
-                Instruction instruction = new Instruction(instructions.getJSONArray(i));
-                turnByTurn.add(instruction);
+        double[] pre = null;
+        double distance = 0;
+        double totalDistance = 0;
+        double[] markerPoint = {0, 0};
+
+        int marker = 1;
+        ArrayList<double[]> geometry = getGeometry();
+        // set initial point to first instruction
+        turnByTurn.get(0).setPoint(geometry.get(0));
+        for(int i = 0; i < geometry.size(); i++) {
+            double[] f = geometry.get(i);
+            if(marker == turnByTurn.size()) {
+                continue;
             }
+            Instruction instruction = turnByTurn.get(marker);
+            if(pre != null) {
+                distance = f[2] - pre[2];
+                totalDistance += distance;
+            }
+            // this needs the previous distance marker hence minus one
+            if(Math.floor(totalDistance) > turnByTurn.get(marker-1).getDistance()) {
+                instruction.setPoint(markerPoint);
+                marker++;
+                totalDistance = distance;
+            }
+            markerPoint = new double[]{f[0], f[1]};
+            pre = f;
 
-            double[] pre = null;
-            double distance = 0;
-            double totalDistance = 0;
-            double[] markerPoint = {0, 0};
-
-            int marker = 1;
-            ArrayList<double[]> geometry = getGeometry();
-            int size = geometry.size();
-            // set initial point to first instruction
-            turnByTurn.get(0).setPoint(geometry.get(0));
-            for(double[] f: geometry) {
-                if(marker == turnByTurn.size()) {
-                    continue;
-                }
-                Instruction instruction = turnByTurn.get(marker);
-                if(pre != null) {
-                    distance = f[2] - pre[2];
-                    totalDistance += distance;
-                }
-                // this needs the previous distance marker hence minus one
-                if(Math.floor(totalDistance) > turnByTurn.get(marker-1).getDistance()) {
-                    instruction.setPoint(markerPoint);
-                    marker++;
-                    totalDistance = distance;
-                }
-                markerPoint = new double[]{f[0], f[1]};
-                pre = f;
-                // setting the last one to the destination
-                if(--size == 0) {
-                    turnByTurn.get(marker).setPoint(markerPoint);
-                }
+            // setting the last one to the destination
+            if(geometry.size() - 1 == i) {
+                turnByTurn.get(marker).setPoint(markerPoint);
             }
         }
         return turnByTurn;
