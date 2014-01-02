@@ -1,9 +1,12 @@
 package com.mapzen.osrm;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class RouteTest {
     String routeJson =  "{\n" +
@@ -159,4 +162,61 @@ public class RouteTest {
         assert(list.get(2)[0] == 4.3252);
         assert(list.get(2)[1] == -12.6453);
     }
+
+    private Route getBrooklynRoute() throws Exception {
+        String fileName = System.getProperty("user.dir");
+        File file = new File(fileName + "/src/test/fixtures/brooklyn.route");
+        String content = FileUtils.readFileToString(file, "UTF-8");
+        return new Route(content);
+    }
+
+    @Test
+    public void hasCorrectNumberOfInstructionsInBrooklyn() throws Exception {
+        // TODO path to fixtures setup
+        Route brooklynRoute = getBrooklynRoute();
+        assert(brooklynRoute.getRouteInstructions().size() == 6);
+    }
+
+    @Test
+    public void hasCorrectTurnByTurnCordinatesInBrooklyn() throws Exception {
+        ArrayList<double[]> points = new ArrayList<double[]>();
+        points.add(new double[]{40.66071, -73.98933});
+        points.add(new double[]{40.65982, -73.98784});
+        points.add(new double[]{40.65925, -73.98843});
+        points.add(new double[]{40.66325, -73.99504});
+        points.add(new double[]{40.66732, -73.99117});
+        points.add(new double[]{40.66631, -73.98909});
+        Route brooklynRoute = getBrooklynRoute();
+
+        ListIterator<double[]> expectedPoints = points.listIterator();
+        for(Instruction instruction: brooklynRoute.getRouteInstructions()) {
+            double[] expectedPoint = expectedPoints.next();
+            double[] instructionPoint = instruction.getPoint();
+
+            // ceiling it as the percision of the double is not identical on the sixth digit
+            assert(Double.compare(Math.ceil(instructionPoint[0]), Math.ceil(expectedPoint[0])) == 0);
+            assert(Double.compare(Math.ceil(instructionPoint[1]), Math.ceil(expectedPoint[1])) == 0);
+        }
+    }
+
+    @Test
+    public void hasCorrectTurnByTurnHumanInstructionsInBrooklyn() throws Exception {
+        ArrayList<String> points = new ArrayList<String>();
+        points.add("Head On");
+        points.add("Turn Right");
+        points.add("Turn Right");
+        points.add("Turn Right");
+        points.add("Turn Right");
+        points.add("Reached Your Destination");
+        Route brooklynRoute = getBrooklynRoute();
+
+        ListIterator<String> expectedPoints = points.listIterator();
+        for(Instruction instruction: brooklynRoute.getRouteInstructions()) {
+            String expectedDirection = expectedPoints.next();
+            String instructionDirection = instruction.getHumanTurnInstruction();
+            assert(instructionDirection.equals(expectedDirection));
+        }
+    }
+
+
 }
