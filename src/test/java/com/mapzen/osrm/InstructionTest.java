@@ -244,6 +244,14 @@ public class InstructionTest {
     }
 
     @Test
+    public void hasBearingAngle() throws Exception {
+        String json = "[10,\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
+        JSONArray jsonArray = new JSONArray(json);
+        instruction = new Instruction(jsonArray);
+        assert(instruction.getBearing() == (360 - 128));
+    }
+
+    @Test
     public void hasPointCoordinates() throws Exception {
         assert(instruction.getPoint() != null);
     }

@@ -2,6 +2,8 @@ apply plugin: 'java'
 apply plugin: 'java-library-distribution'
 apply from: 'http://www.tellurianring.com/projects/gradle-plugins/gradle-templates/1.3/apply.groovy'
 
+defaultTasks = ['clean', 'test', 'jar']
+
 repositories {
     maven { url 'http://repo.maven.apache.org/maven2' }
 }
@@ -9,4 +11,5 @@ repositories {
 dependencies {
     compile 'org.json:json:20131018'
     testCompile 'junit:junit:4.10'
+    testCompile 'org.apache.commons:commons-io:1.3.2'
 }

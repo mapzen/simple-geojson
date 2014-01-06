@@ -23,8 +23,6 @@ public class Instruction {
     public static String EnterAgainstAllowedDirection = "Enter Against Allowed Direction"; // 16;
     public static String LeaveAgainstAllowedDirection = "Leave Against Allowed Direction"; // 17;
 
-    public static String direction;
-
     public static int METERS_IN_MILE = 1609;
 
     private JSONArray json;
@@ -38,7 +36,6 @@ public class Instruction {
         this.json = json;
         setTurnInstruction(json.getInt(0));
         setDistance(json.getInt(2));
-        setDirection(json.getString(6));
     }
 
     public void setTurnInstruction(int turn) {
@@ -66,10 +63,6 @@ public class Instruction {
         this.distance = distance;
     }
 
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
-
     public int getDistance() {
         return distance;
     }
@@ -79,10 +72,11 @@ public class Instruction {
     }
 
     public String getDirection() {
-        return direction;
+        return json.getString(6);
     }
 
     public float getDirectionAngle() {
+        String direction = getDirection();
         float angle = 0;
         if (direction.equals("NE")) {
             angle = 315.0f;
@@ -100,6 +94,10 @@ public class Instruction {
             angle = 45.0f;
         }
         return angle;
+    }
+
+    public int getBearing() {
+        return 360 - json.getInt(7);
     }
 
     public double[] getPoint() {
