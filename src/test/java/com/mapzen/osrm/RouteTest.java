@@ -202,12 +202,12 @@ public class RouteTest {
     @Test
     public void hasCorrectTurnByTurnHumanInstructionsInBrooklyn() throws Exception {
         ArrayList<String> points = new ArrayList<String>();
-        points.add("Head On");
-        points.add("Turn Right");
-        points.add("Turn Right");
-        points.add("Turn Right");
-        points.add("Turn Right");
-        points.add("Reached Your Destination");
+        points.add("Head on");
+        points.add("Make a right on to");
+        points.add("Make a right on to");
+        points.add("Make a right on to");
+        points.add("Make a right on to");
+        points.add("You have reached your destination");
         Route brooklynRoute = getBrooklynRoute();
 
         ListIterator<String> expectedPoints = points.listIterator();
