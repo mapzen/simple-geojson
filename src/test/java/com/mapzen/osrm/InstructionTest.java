@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Locale;
+
 public class InstructionTest {
     private Instruction instruction;
     @Before
@@ -262,5 +264,10 @@ public class InstructionTest {
         instruction.setPoint(expected);
         assert(instruction.getPoint() == expected);
 
+    }
+
+    @Test
+    public void hasHumanDistance() throws Exception {
+        assert(instruction.getHumanDistance(Locale.ENGLISH).equals("1.00 miles"));
     }
 }

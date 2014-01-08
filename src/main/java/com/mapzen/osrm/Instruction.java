@@ -3,6 +3,8 @@ package com.mapzen.osrm;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.Locale;
+
 public class Instruction {
     public static String NoTurn = "No Turn"; // 0;          //Give no instruction at all
     public static String GoStraight = "Go Straight"; //1;      //Tell user to go straight!
@@ -23,7 +25,7 @@ public class Instruction {
     public static String EnterAgainstAllowedDirection = "Enter Against Allowed Direction"; // 16;
     public static String LeaveAgainstAllowedDirection = "Leave Against Allowed Direction"; // 17;
 
-    public static int METERS_IN_MILE = 1609;
+    public static double METERS_IN_MILE = 1609.0;
 
     private JSONArray json;
     private int turn, distance;
@@ -67,8 +69,12 @@ public class Instruction {
         return distance;
     }
 
-    public int getDistanceInMiles() {
+    public double getDistanceInMiles() {
         return distance / METERS_IN_MILE;
+    }
+
+    public String getHumanDistance(Locale locale) {
+        return String.format(locale, "%.2f miles", getDistanceInMiles());
     }
 
     public String getDirection() {
@@ -106,5 +112,11 @@ public class Instruction {
 
     public void setPoint(double[] point) {
         this.point = point;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(Locale.ENGLISH, "Instruction: (%.5f, %.5f) %s %s",
+                point[0], point[1], getHumanTurnInstruction(), getName());
     }
 }
