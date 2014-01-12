@@ -15,15 +15,14 @@ public class FeatureTest {
                 "type\":\"Feature\"," +
                 "\"geometry\":" +
                 "{\"type\":\"Point\"," +
-                "\"coordinates\": [-0.12739091,51.4993491]}," +
+                "\"coordinates\": [\"-0.12739091\",\"51.4993491\"]}," +
                 "\"properties\":" +
-                "{\"title\":\"Feature Name to Display\"," +
-                "\"description\":\"testDescription\"," +
+                "{\"name\":\"Feature Name to Display\"," +
+                "\"type\":\"testDescription\"," +
                 "\"country_code\":\"testUS\"," +
                 "\"country_name\":\"testUnited States\"," +
                 "\"admin1_abbr\":\"testNY\"," +
                 "\"admin1_name\":\"testNew York\"," +
-                "\"type\":\"geoname\"," +
                 "\"marker-color\":\"#F00\"}}");
     }
 
@@ -95,12 +94,12 @@ public class FeatureTest {
 
     @Test
     public void hasTitleFromJson() throws Exception {
-        assert( fromJson().getProperty("title").equals("Feature Name to Display"));
+        assert( fromJson().getProperty("name").equals("Feature Name to Display"));
     }
 
     @Test
     public void hasDescriptionFromJson() throws Exception {
-        assert( fromJson().getProperty("description").equals("testDescription"));
+        assert( fromJson().getProperty("type").equals("testDescription"));
     }
 
     @Test
