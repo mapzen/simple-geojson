@@ -114,6 +114,10 @@ public class Instruction {
         this.point = point;
     }
 
+    public String getFullInstruction() {
+        return String.format(Locale.ENGLISH, "%s %s for %s", getHumanTurnInstruction(), getName(), getHumanDistance(Locale.ENGLISH));
+    }
+
     @Override
     public String toString() {
         return String.format(Locale.ENGLISH, "Instruction: (%.5f, %.5f) %s %s",
