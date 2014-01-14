@@ -273,8 +273,45 @@ public class InstructionTest {
     }
 
     @Test
-    public void hasHumanDistance() throws Exception {
+    public void testLongerThanMileHumanDistance() throws Exception {
         assert(instruction.getHumanDistance(Locale.ENGLISH).equals("1.00 miles"));
+    }
+
+    public void setDistanceInMiles(double miles) {
+        int meters = (int) Math.floor(Instruction.METERS_IN_MILE * miles);
+        instruction.setDistance(meters);
+    }
+
+    @Test
+    public void testThreeQuartersApproximationDistance() throws Exception {
+        setDistanceInMiles(0.80);
+        String actual = instruction.getHumanDistance(Locale.ENGLISH);
+        String expected = "about three quarters of a mile";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testAboutHalfApproximationDistance() throws Exception {
+        setDistanceInMiles(0.73);
+        String actual = instruction.getHumanDistance(Locale.ENGLISH);
+        String expected = "about half a mile";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testAboutOneQuarterOfAApproximationDistance() throws Exception {
+        setDistanceInMiles(0.45);
+        String actual = instruction.getHumanDistance(Locale.ENGLISH);
+        String expected = "about one quarter of a mile";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testAboutOneEightOfAApproximationDistance() throws Exception {
+        setDistanceInMiles(0.110);
+        String actual = instruction.getHumanDistance(Locale.ENGLISH);
+        String expected = "about one eight of a mile";
+        assertEquals(expected, actual);
     }
 
     private Instruction getInstructionWithTurn(String turn) {

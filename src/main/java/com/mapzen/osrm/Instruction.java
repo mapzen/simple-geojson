@@ -75,7 +75,21 @@ public class Instruction {
     }
 
     public String getHumanDistance(Locale locale) {
-        return String.format(locale, "%.2f miles", getDistanceInMiles());
+        double miles = getDistanceInMiles();
+        double remainder = miles - Math.floor(miles);
+        String distance = String.format(locale, "%.2f miles", getDistanceInMiles());
+        if(miles < 1.0) {
+            if (remainder > 0.75) {
+                distance = "about three quarters of a mile";
+            } else if (remainder > 0.5) {
+                distance = "about half a mile";
+            } else if (remainder > 0.25) {
+                distance = "about one quarter of a mile";
+            } else if (remainder < 0.125) {
+                distance = "about one eight of a mile";
+            }
+        }
+        return distance;
     }
 
     public String getDirection() {
