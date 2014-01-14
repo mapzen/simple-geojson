@@ -25,6 +25,12 @@ public class Instruction {
     public static String EnterAgainstAllowedDirection = "Enter against allowed direction"; // 16;
     public static String LeaveAgainstAllowedDirection = "Leave against allowed direction"; // 17;
 
+    public static String[] decodedInstructions = { NoTurn, GoStraight, TurnSlightRight, TurnRight, TurnSharpRight, UTurn,
+            TurnSharpLeft, TurnLeft, TurnSlightLeft, ReachViaPoint, HeadOn, EnterRoundAbout, LeaveRoundAbout,
+            StayOnRoundAbout, StartAtEndOfStreet, ReachedYourDestination, EnterAgainstAllowedDirection,
+            LeaveAgainstAllowedDirection
+    };
+
     public static double METERS_IN_MILE = 1609.0;
 
     private JSONArray json;
@@ -49,11 +55,6 @@ public class Instruction {
     }
 
     public String getHumanTurnInstruction() {
-        String[] decodedInstructions = { NoTurn, GoStraight, TurnSlightRight, TurnRight, TurnSharpRight, UTurn,
-            TurnSharpLeft, TurnLeft, TurnSlightLeft, ReachViaPoint, HeadOn, EnterRoundAbout, LeaveRoundAbout,
-            StayOnRoundAbout, StartAtEndOfStreet, ReachedYourDestination, EnterAgainstAllowedDirection,
-            LeaveAgainstAllowedDirection
-        };
         return decodedInstructions[turn];
     }
 
@@ -114,8 +115,24 @@ public class Instruction {
         this.point = point;
     }
 
+    private String getFullInstructionPattern() {
+        String controllingGluePhrase = "and continue on for";
+        String pattern = "%s %s "+ controllingGluePhrase + " %s";
+        if (getHumanTurnInstruction().equals(HeadOn) ||
+                getHumanTurnInstruction().equals(GoStraight)) {
+            controllingGluePhrase = "for";
+            pattern = "%s %s "+ controllingGluePhrase + " %s";
+        } else if (getHumanTurnInstruction().equals(ReachedYourDestination)) {
+            pattern = "%s %s";
+        }
+        return pattern;
+    }
+
     public String getFullInstruction() {
-        return String.format(Locale.ENGLISH, "%s %s for %s", getHumanTurnInstruction(), getName(), getHumanDistance(Locale.ENGLISH));
+        return String.format(Locale.ENGLISH,
+                getFullInstructionPattern(),
+                getHumanTurnInstruction(),
+                getName(), getHumanDistance(Locale.ENGLISH));
     }
 
     @Override

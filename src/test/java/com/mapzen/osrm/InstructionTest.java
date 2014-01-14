@@ -4,7 +4,13 @@ import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Locale;
+
+import static com.mapzen.osrm.Instruction.*;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class InstructionTest {
     private Instruction instruction;
@@ -48,7 +54,7 @@ public class InstructionTest {
     @Test
     public void turnInstructionHasGoStraight() {
         instruction.setTurnInstruction(1);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.GoStraight));
+        assert(instruction.getHumanTurnInstruction().equals(GoStraight));
     }
 
     @Test
@@ -102,7 +108,7 @@ public class InstructionTest {
     @Test
     public void turnInstructionHasHeadOn() {
         instruction.setTurnInstruction(10);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.HeadOn));
+        assert(instruction.getHumanTurnInstruction().equals(HeadOn));
     }
 
     @Test
@@ -132,7 +138,7 @@ public class InstructionTest {
     @Test
     public void turnInstructionHasReachedYourDestination() {
         instruction.setTurnInstruction(15);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.ReachedYourDestination));
+        assert(instruction.getHumanTurnInstruction().equals(ReachedYourDestination));
     }
 
     @Test
@@ -269,5 +275,61 @@ public class InstructionTest {
     @Test
     public void hasHumanDistance() throws Exception {
         assert(instruction.getHumanDistance(Locale.ENGLISH).equals("1.00 miles"));
+    }
+
+    private Instruction getInstructionWithTurn(String turn) {
+        ArrayList<String> withIndex = new ArrayList<String>(decodedInstructions.length);
+        for(int i = 0; i < decodedInstructions.length; i++) {
+            withIndex.add(decodedInstructions[i]);
+        }
+        instruction.setTurnInstruction(withIndex.indexOf(turn));
+        return instruction;
+    }
+
+    private String getExpectedFullInstructionFor(Instruction currentInstruction, String pattern) {
+        return String.format(Locale.ENGLISH, pattern,
+                currentInstruction.getHumanTurnInstruction(),
+                currentInstruction.getName(),
+                currentInstruction.getHumanDistance(Locale.ENGLISH));
+    }
+
+    @Test
+    public void testHeadOnFullInstruction() throws Exception {
+        Instruction currentInstruction = getInstructionWithTurn(HeadOn);
+        String actual = currentInstruction.getFullInstruction();
+        assertEquals(getExpectedFullInstructionFor(currentInstruction,
+                "%s %s for %s"), actual);
+    }
+
+    @Test
+    public void testGoStraightFullInstruction() throws Exception {
+        Instruction currentInstruction = getInstructionWithTurn(GoStraight);
+        String actual = currentInstruction.getFullInstruction();
+        assertEquals(getExpectedFullInstructionFor(currentInstruction,
+                "%s %s for %s"), actual);
+    }
+
+    @Test
+    public void testReachedYourDestinationFullInstruction() throws Exception {
+        Instruction currentInstruction = getInstructionWithTurn(ReachedYourDestination);
+        String actual = currentInstruction.getFullInstruction();
+        assertEquals(getExpectedFullInstructionFor(currentInstruction,
+                "%s %s"), actual);
+    }
+
+    @Test
+    public void testOtherFullInstruction() throws Exception {
+        Instruction currentInstruction;
+        String actual;
+        for(int i = 0; i < decodedInstructions.length; i++) {
+           if (!decodedInstructions[i].equals(ReachedYourDestination) &&
+                   !decodedInstructions[i].equals(GoStraight) &&
+                       !decodedInstructions[i].equals(HeadOn)) {
+               currentInstruction = getInstructionWithTurn(decodedInstructions[i]);
+               actual = currentInstruction.getFullInstruction();
+               assertEquals(getExpectedFullInstructionFor(currentInstruction,
+                       "%s %s and continue on for %s"), actual);
+           }
+        }
     }
 }
