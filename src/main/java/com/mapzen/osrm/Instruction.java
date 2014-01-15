@@ -88,13 +88,13 @@ public class Instruction {
             distance = String.valueOf((int) miles) + " miles and ";
         }
         if (remainder > 0.75) {
-            distance += "about three quarters of a mile";
+            distance += "about \u00BE of a mile";
         } else if (remainder > 0.5) {
-            distance += "about half a mile";
+            distance += "about \u00BD a mile";
         } else if (remainder > 0.25) {
-            distance += "about one quarter of a mile";
+            distance += "about \u00BC of a mile";
         } else if (remainder > 0.125) {
-            distance += "about one eight of a mile";
+            distance += "about \u215B of a mile";
         } else {
             distance += String.valueOf(getDistanceLessThanMileInFeet()) + " feet";
         }

@@ -281,7 +281,7 @@ public class InstructionTest {
     public void testThreeQuartersApproximationDistance() throws Exception {
         setDistanceInMiles(0.80);
         String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "about three quarters of a mile";
+        String expected = "about \u00BE of a mile";
         assertEquals(expected, actual);
     }
 
@@ -289,7 +289,7 @@ public class InstructionTest {
     public void testThreeQuartersApproximationDistanceOverMile() throws Exception {
         setDistanceInMiles(3.80);
         String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "3 miles and about three quarters of a mile";
+        String expected = "3 miles and about \u00BE of a mile";
         assertEquals(expected, actual);
     }
 
@@ -297,7 +297,7 @@ public class InstructionTest {
     public void testAboutHalfApproximationDistance() throws Exception {
         setDistanceInMiles(0.73);
         String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "about half a mile";
+        String expected = "about \u00BD a mile";
         assertEquals(expected, actual);
     }
 
@@ -305,7 +305,7 @@ public class InstructionTest {
     public void testAboutHalfApproximationDistanceOverMile() throws Exception {
         setDistanceInMiles(3.73);
         String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "3 miles and about half a mile";
+        String expected = "3 miles and about \u00BD a mile";
         assertEquals(expected, actual);
     }
 
@@ -313,7 +313,7 @@ public class InstructionTest {
     public void testAboutOneQuarterOfAApproximationDistance() throws Exception {
         setDistanceInMiles(0.45);
         String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "about one quarter of a mile";
+        String expected = "about \u00BC of a mile";
         assertEquals(expected, actual);
     }
 
@@ -321,7 +321,7 @@ public class InstructionTest {
     public void testAboutOneQuarterOfAApproximationDistanceOverMile() throws Exception {
         setDistanceInMiles(3.45);
         String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "3 miles and about one quarter of a mile";
+        String expected = "3 miles and about \u00BC of a mile";
         assertEquals(expected, actual);
     }
 
@@ -329,7 +329,7 @@ public class InstructionTest {
     public void testAboutOneEightOfAApproximationDistance() throws Exception {
         setDistanceInMiles(0.130);
         String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "about one eight of a mile";
+        String expected = "about \u215B of a mile";
         assertEquals(expected, actual);
     }
 
@@ -337,7 +337,7 @@ public class InstructionTest {
     public void testAboutOneEightOfAApproximationDistanceOverMile() throws Exception {
         setDistanceInMiles(3.130);
         String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "3 miles and about one eight of a mile";
+        String expected = "3 miles and about \u215B of a mile";
         assertEquals(expected, actual);
     }
 
