@@ -3,6 +3,7 @@ package com.mapzen.osrm;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import javax.print.DocFlavor;
 import java.util.Locale;
 
 public class Instruction {
@@ -32,6 +33,7 @@ public class Instruction {
     };
 
     public static double METERS_IN_MILE = 1609.0;
+    public static double FEET_IN_MILE = 5280.0;
 
     private JSONArray json;
     private int turn, distance;
@@ -74,20 +76,27 @@ public class Instruction {
         return distance / METERS_IN_MILE;
     }
 
+    public int getDistanceLessThanMileInFeet() {
+        return (int) Math.round(getDistanceInMiles() % 1 * FEET_IN_MILE);
+    }
+
     public String getHumanDistance(Locale locale) {
         double miles = getDistanceInMiles();
-        double remainder = miles - Math.floor(miles);
-        String distance = String.format(locale, "%.2f miles", getDistanceInMiles());
-        if(miles < 1.0) {
-            if (remainder > 0.75) {
-                distance = "about three quarters of a mile";
-            } else if (remainder > 0.5) {
-                distance = "about half a mile";
-            } else if (remainder > 0.25) {
-                distance = "about one quarter of a mile";
-            } else if (remainder < 0.125) {
-                distance = "about one eight of a mile";
-            }
+        double remainder = miles % 1;
+        String distance = "";
+        if (Math.floor(miles) > 1) {
+            distance = String.valueOf((int) miles) + " miles and ";
+        }
+        if (remainder > 0.75) {
+            distance += "about three quarters of a mile";
+        } else if (remainder > 0.5) {
+            distance += "about half a mile";
+        } else if (remainder > 0.25) {
+            distance += "about one quarter of a mile";
+        } else if (remainder > 0.125) {
+            distance += "about one eight of a mile";
+        } else {
+            distance += String.valueOf(getDistanceLessThanMileInFeet()) + " feet";
         }
         return distance;
     }
