@@ -25,8 +25,10 @@ public class Route {
 
     public void setJsonObject(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
-        this.instructions = this.jsonObject.getJSONArray("route_instructions");
-        initializeTurnByTurn();
+        if (foundRoute()) {
+            this.instructions = this.jsonObject.getJSONArray("route_instructions");
+            initializeTurnByTurn();
+        }
     }
 
     public int getTotalDistance() {
