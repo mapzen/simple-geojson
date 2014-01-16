@@ -163,9 +163,9 @@ public class RouteTest {
         assert(list.get(2)[1] == -12.6453);
     }
 
-    private Route getBrooklynRoute() throws Exception {
+    private Route getRoute(String name) throws Exception {
         String fileName = System.getProperty("user.dir");
-        File file = new File(fileName + "/src/test/fixtures/brooklyn.route");
+        File file = new File(fileName + "/src/test/fixtures/" + name + ".route");
         String content = FileUtils.readFileToString(file, "UTF-8");
         return new Route(content);
     }
@@ -173,7 +173,7 @@ public class RouteTest {
     @Test
     public void hasCorrectNumberOfInstructionsInBrooklyn() throws Exception {
         // TODO path to fixtures setup
-        Route brooklynRoute = getBrooklynRoute();
+        Route brooklynRoute = getRoute("brooklyn");
         assert(brooklynRoute.getRouteInstructions().size() == 6);
     }
 
@@ -186,7 +186,7 @@ public class RouteTest {
         points.add(new double[]{40.66325, -73.99504});
         points.add(new double[]{40.66732, -73.99117});
         points.add(new double[]{40.66631, -73.98909});
-        Route brooklynRoute = getBrooklynRoute();
+        Route brooklynRoute = getRoute("brooklyn");
 
         ListIterator<double[]> expectedPoints = points.listIterator();
         for(Instruction instruction: brooklynRoute.getRouteInstructions()) {
@@ -208,7 +208,7 @@ public class RouteTest {
         points.add("Make a right on to");
         points.add("Make a right on to");
         points.add("You have reached your destination");
-        Route brooklynRoute = getBrooklynRoute();
+        Route brooklynRoute = getRoute("brooklyn");
 
         ListIterator<String> expectedPoints = points.listIterator();
         for(Instruction instruction: brooklynRoute.getRouteInstructions()) {
@@ -218,5 +218,25 @@ public class RouteTest {
         }
     }
 
+    @Test
+    public void testHasRoute() throws Exception {
+        assert(route.getStatus() == 0);
+    }
 
+    @Test
+    public void testHasRouteMethod() throws Exception {
+        assert(route.foundRoute());
+    }
+
+    @Test
+    public void testHasNoRoute() throws Exception {
+        route = getRoute("unsuccessful");
+        assert(route.getStatus() == 207);
+    }
+
+    @Test
+    public void testHasNoRouteMethod() throws Exception {
+        route = getRoute("unsuccessful");
+        assert(!route.foundRoute());
+    }
 }

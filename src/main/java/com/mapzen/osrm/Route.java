@@ -33,6 +33,14 @@ public class Route {
         return getSumary().getInt("total_distance");
     }
 
+    public int getStatus() {
+        return jsonObject.getInt("status");
+    }
+
+    public boolean foundRoute() {
+        return getStatus() == 0;
+    }
+
     public int getTotalTime() {
         return getSumary().getInt("total_time");
     }
