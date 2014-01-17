@@ -12,12 +12,12 @@ public class GeoFeatureTest {
     public void setUp() throws Exception {
         blankGeoFeature = new GeoFeature();
         json = new JSONObject("{\"" +
-                "type\":\"GeoFeature\"," +
+                "type\":\"Feature\"," +
                 "\"geometry\":" +
                 "{\"type\":\"Point\"," +
                 "\"coordinates\": [\"-0.12739091\",\"51.4993491\"]}," +
                 "\"properties\":" +
-                "{\"name\":\"GeoFeature Name to Display\"," +
+                "{\"name\":\"Feature Name to Display\"," +
                 "\"type\":\"testDescription\"," +
                 "\"country_code\":\"testUS\"," +
                 "\"country_name\":\"testUnited States\"," +
@@ -94,7 +94,7 @@ public class GeoFeatureTest {
 
     @Test
     public void hasTitleFromJson() throws Exception {
-        assert( fromJson().getProperty("name").equals("GeoFeature Name to Display"));
+        assert( fromJson().getProperty("name").equals("Feature Name to Display"));
     }
 
     @Test
