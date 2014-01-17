@@ -7,12 +7,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class Feature {
+public class GeoFeature {
     private HashMap<String, String> properties = new HashMap<String, String>();
     private Geometry geometry = new Geometry();
-
-    public Feature() {
-    }
 
     public void buildFromJSON(JSONObject json) throws JSONException {
         JSONObject properties = json.getJSONObject("properties");

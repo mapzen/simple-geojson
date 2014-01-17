@@ -4,13 +4,13 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FeatureTest {
-    private Feature blankFeature;
+public class GeoFeatureTest {
+    private GeoFeature blankGeoFeature;
     private JSONObject json;
 
     @Before
     public void setUp() throws Exception {
-        blankFeature = new Feature();
+        blankGeoFeature = new GeoFeature();
         json = new JSONObject("{\"" +
                 "type\":\"Feature\"," +
                 "\"geometry\":" +
@@ -28,58 +28,58 @@ public class FeatureTest {
 
     @Test
     public void isObject() throws Exception {
-        assert(blankFeature != null);
+        assert(blankGeoFeature != null);
     }
 
     @Test
     public void hasGeometry() throws Exception {
-        Geometry geometry = blankFeature.getGeometry();
+        Geometry geometry = blankGeoFeature.getGeometry();
         assert(geometry != null);
     }
 
     @Test
     public void hasProperties() throws Exception {
-        assert(blankFeature.getProperties() != null);
+        assert(blankGeoFeature.getProperties() != null);
     }
 
     @Test
     public void canSetProperties() throws Exception {
         String expected = "test_value";
-        blankFeature.setProperty("test_key", expected);
-        String actual = blankFeature.getProperty("test_key");
+        blankGeoFeature.setProperty("test_key", expected);
+        String actual = blankGeoFeature.getProperty("test_key");
         assert(expected.equals(actual));
     }
 
     @Test
     public void hasLat() throws Exception {
-        assert(blankFeature.getLat() == 0);
+        assert(blankGeoFeature.getLat() == 0);
     }
 
     @Test
     public void hasLot() throws Exception {
-        assert(blankFeature.getLon() == 0);
+        assert(blankGeoFeature.getLon() == 0);
     }
 
     @Test
     public void canSetLat() throws Exception {
         double expectedLat = 10.0;
-        blankFeature.setLat(expectedLat);
-        double actual = blankFeature.getLat();
+        blankGeoFeature.setLat(expectedLat);
+        double actual = blankGeoFeature.getLat();
         assert(expectedLat == actual);
     }
 
     @Test
     public void canSetLot() throws Exception {
         double expectedLon = -10.0;
-        blankFeature.setLon(expectedLon);
-        double actual = blankFeature.getLon();
+        blankGeoFeature.setLon(expectedLon);
+        double actual = blankGeoFeature.getLon();
         assert(expectedLon == actual);
     }
 
-    private Feature fromJson() throws Exception {
-        Feature feature = new Feature();
-        feature.buildFromJSON(json);
-        return feature;
+    private GeoFeature fromJson() throws Exception {
+        GeoFeature geoFeature = new GeoFeature();
+        geoFeature.buildFromJSON(json);
+        return geoFeature;
     }
 
     @Test
