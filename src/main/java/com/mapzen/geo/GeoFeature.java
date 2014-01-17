@@ -11,9 +11,6 @@ public class GeoFeature {
     private HashMap<String, String> properties = new HashMap<String, String>();
     private Geometry geometry = new Geometry();
 
-    public GeoFeature() {
-    }
-
     public void buildFromJSON(JSONObject json) throws JSONException {
         JSONObject properties = json.getJSONObject("properties");
         Iterator<String> iterator = properties.keys();
