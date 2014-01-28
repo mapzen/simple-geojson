@@ -1,5 +1,6 @@
 package com.mapzen.osrm;
 
+import org.hamcrest.CoreMatchers;
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import static com.mapzen.osrm.Instruction.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -413,5 +416,20 @@ public class InstructionTest {
                        "%s %s and continue on for %s"), actual);
            }
         }
+    }
+
+    @Test
+    public void shouldCalculateMidpointToNext() throws Exception {
+        double[] currentPoint = {1,2};
+        instruction.setPoint(currentPoint);
+        double lat2 = 30;
+        double lng2 = 50;
+        double[] nextPoint = {lat2, lng2};
+        double[] midPoint = instruction.calculateMidpointToNext(nextPoint);
+        double[] point = instruction.getPoint();
+        double lat1 = point[0];
+        double lng1 = point[1];
+        double[] expectedMidpoint = {((lat1+lat2)/2), ((lng1+lng2)/2) };
+        assertThat(midPoint, equalTo(expectedMidpoint));
     }
 }

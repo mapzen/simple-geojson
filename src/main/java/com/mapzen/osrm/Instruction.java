@@ -163,4 +163,11 @@ public class Instruction {
         return String.format(Locale.ENGLISH, "Instruction: (%.5f, %.5f) %s %s",
                 point[0], point[1], getHumanTurnInstruction(), getName());
     }
+
+    public double[] calculateMidpointToNext(double[] nextPoint) {
+        double midLat = (point[0] + nextPoint[0])/2;
+        double midLng = (point[1] + nextPoint[1])/2;
+        double[] midPoint = { midLat, midLng };
+        return midPoint;
+    }
 }
