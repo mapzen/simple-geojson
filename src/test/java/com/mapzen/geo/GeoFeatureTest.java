@@ -4,6 +4,11 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 public class GeoFeatureTest {
     private GeoFeature blankGeoFeature;
     private JSONObject json;
@@ -28,18 +33,18 @@ public class GeoFeatureTest {
 
     @Test
     public void isObject() throws Exception {
-        assert(blankGeoFeature != null);
+        assertThat(blankGeoFeature, notNullValue());
     }
 
     @Test
     public void hasGeometry() throws Exception {
         Geometry geometry = blankGeoFeature.getGeometry();
-        assert(geometry != null);
+        assertThat(geometry, notNullValue());
     }
 
     @Test
     public void hasProperties() throws Exception {
-        assert(blankGeoFeature.getProperties() != null);
+        assertThat(blankGeoFeature.getProperties(), notNullValue());
     }
 
     @Test
@@ -47,17 +52,17 @@ public class GeoFeatureTest {
         String expected = "test_value";
         blankGeoFeature.setProperty("test_key", expected);
         String actual = blankGeoFeature.getProperty("test_key");
-        assert(expected.equals(actual));
+        assertThat(actual, equalTo(expected));
     }
 
     @Test
     public void hasLat() throws Exception {
-        assert(blankGeoFeature.getLat() == 0);
+        assertTrue(blankGeoFeature.getLat() == 0);
     }
 
     @Test
     public void hasLot() throws Exception {
-        assert(blankGeoFeature.getLon() == 0);
+        assertTrue(blankGeoFeature.getLon() == 0);
     }
 
     @Test
@@ -65,7 +70,7 @@ public class GeoFeatureTest {
         double expectedLat = 10.0;
         blankGeoFeature.setLat(expectedLat);
         double actual = blankGeoFeature.getLat();
-        assert(expectedLat == actual);
+        assertThat(actual, equalTo(expectedLat));
     }
 
     @Test
@@ -73,7 +78,7 @@ public class GeoFeatureTest {
         double expectedLon = -10.0;
         blankGeoFeature.setLon(expectedLon);
         double actual = blankGeoFeature.getLon();
-        assert(expectedLon == actual);
+        assertThat(actual, equalTo(expectedLon));
     }
 
     private GeoFeature fromJson() throws Exception {
@@ -84,41 +89,41 @@ public class GeoFeatureTest {
 
     @Test
     public void hasLonFromJson() throws Exception {
-        assert(fromJson().getLon() == -0.12739091);
+        assertThat(fromJson().getLon(), equalTo(-0.12739091));
     }
 
     @Test
     public void hasLatFromJson() throws Exception {
-        assert(fromJson().getLat() == 51.4993491);
+        assertThat(fromJson().getLat(), equalTo(51.4993491));
     }
 
     @Test
     public void hasTitleFromJson() throws Exception {
-        assert( fromJson().getProperty("name").equals("Feature Name to Display"));
+        assertThat(fromJson().getProperty("name"), equalTo("Feature Name to Display"));
     }
 
     @Test
     public void hasDescriptionFromJson() throws Exception {
-        assert( fromJson().getProperty("type").equals("testDescription"));
+        assertThat(fromJson().getProperty("type"), equalTo("testDescription"));
     }
 
     @Test
     public void hasCountryNameFromJson() throws Exception {
-        assert( fromJson().getProperty("country_name").equals("testUnited States"));
+        assertThat(fromJson().getProperty("country_name"), equalTo("testUnited States"));
     }
 
     @Test
     public void hasCountryCodeFromJson() throws Exception {
-        assert( fromJson().getProperty("country_code").equals("testUS"));
+        assertThat(fromJson().getProperty("country_code"), equalTo("testUS"));
     }
 
     @Test
     public void hasAdmin1AbbrFromJson() throws Exception {
-        assert( fromJson().getProperty("admin1_abbr").equals("testNY"));
+        assertThat(fromJson().getProperty("admin1_abbr"), equalTo("testNY"));
     }
 
     @Test
     public void hasAdmin1NameFromJson() throws Exception {
-        assert( fromJson().getProperty("admin1_name").equals("testNew York"));
+        assertThat(fromJson().getProperty("admin1_name"), equalTo("testNew York"));
     }
 }
