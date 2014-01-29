@@ -1,6 +1,5 @@
 package com.mapzen.osrm;
 
-import org.hamcrest.CoreMatchers;
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,11 +8,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import static com.mapzen.osrm.Instruction.*;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.core.Is.is;
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 public class InstructionTest {
     private Instruction instruction;
@@ -430,6 +426,11 @@ public class InstructionTest {
         double lat1 = point[0];
         double lng1 = point[1];
         double[] expectedMidpoint = {((lat1+lat2)/2), ((lng1+lng2)/2) };
-        assertThat(midPoint, equalTo(expectedMidpoint));
+        assertThat(midPoint).isEqualTo(expectedMidpoint);
+    }
+
+    @Test
+    public void testSimpleInstruction() throws Exception {
+        assertThat(instruction.getSimpleInstruction()).isEqualTo("Head on 19th Street");
     }
 }

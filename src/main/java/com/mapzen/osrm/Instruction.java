@@ -48,6 +48,9 @@ public class Instruction {
         setDistance(json.getInt(2));
     }
 
+    protected Instruction() {
+    }
+
     public void setTurnInstruction(int turn) {
         this.turn = turn;
     }
@@ -156,6 +159,10 @@ public class Instruction {
                 getFullInstructionPattern(),
                 getHumanTurnInstruction(),
                 getName(), getHumanDistance(Locale.ENGLISH));
+    }
+
+    public String getSimpleInstruction() {
+        return String.format(Locale.ENGLISH, "%s %s", getHumanTurnInstruction(), getName());
     }
 
     @Override
