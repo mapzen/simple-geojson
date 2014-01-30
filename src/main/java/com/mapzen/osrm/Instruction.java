@@ -104,6 +104,17 @@ public class Instruction {
         return distance;
     }
 
+    public String getShortFormatDistance(Locale locale) {
+        final double distanceInMiles = getDistanceInMiles();
+        if (distanceInMiles < 1) {
+            return String.format(locale, "%d ft", getDistanceLessThanMileInFeet());
+        } else if (distanceInMiles == (int) distanceInMiles) {
+            return String.format(locale, "%d mi", (int) distanceInMiles);
+        } else {
+            return String.format(locale, "%.2f mi", distanceInMiles);
+        }
+    }
+
     public String getDirection() {
         return json.getString(6);
     }
