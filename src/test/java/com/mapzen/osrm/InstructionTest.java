@@ -433,4 +433,22 @@ public class InstructionTest {
     public void testSimpleInstruction() throws Exception {
         assertThat(instruction.getSimpleInstruction()).isEqualTo("Head on 19th Street");
     }
+
+    @Test
+    public void getShortFormatDistance_shouldShowFeetWhenLessThanAMile() throws Exception {
+        instruction.setDistance(161);
+        assertThat(instruction.getShortFormatDistance(Locale.US)).isEqualTo("528 ft");
+    }
+
+    @Test
+    public void getShortFormatDistance_shouldShowWholeNumberWhenEvenMileAmount() throws Exception {
+        instruction.setDistance(1609);
+        assertThat(instruction.getShortFormatDistance(Locale.US)).isEqualTo("1 mi");
+    }
+
+    @Test
+    public void getShortFormatDistance_shouldShowTwoDecimalPlacesWhenUneven() throws Exception {
+        instruction.setDistance(2154);
+        assertThat(instruction.getShortFormatDistance(Locale.US)).isEqualTo("1.34 mi");
+    }
 }
