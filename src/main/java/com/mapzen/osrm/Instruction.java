@@ -1,42 +1,43 @@
 package com.mapzen.osrm;
 
+import com.mapzen.geo.DistanceFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import javax.print.DocFlavor;
 import java.util.Locale;
 
 public class Instruction {
-    public static String NoTurn = "No turn"; // 0;          //Give no instruction at all
-    public static String GoStraight = "Continue on"; //1;      //Tell user to go straight!
-    public static String TurnSlightRight = "Make a slight right on to"; //2;
-    public static String TurnRight = "Make a right on to"; // 3;
-    public static String TurnSharpRight = "Make a sharp right on to"; // 4;
-    public static String UTurn = "U Turn"; // 5;
-    public static String TurnSharpLeft = "Make a sharp left on to"; // 6;
-    public static String TurnLeft = "Make a left on to"; // 7;
-    public static String TurnSlightLeft = "Make a slight left on to"; // 8;
-    public static String ReachViaPoint = "Reach via point"; // 9;
-    public static String HeadOn = "Head on"; // 10;
-    public static String EnterRoundAbout = "Enter round about"; // 11;
-    public static String LeaveRoundAbout = "Leave round about"; // 12;
-    public static String StayOnRoundAbout = "Stay on round about"; // 13;
-    public static String StartAtEndOfStreet = "Start at end of street"; // 14;
-    public static String ReachedYourDestination = "You have reached your destination"; // 15;
-    public static String EnterAgainstAllowedDirection = "Enter against allowed direction"; // 16;
-    public static String LeaveAgainstAllowedDirection = "Leave against allowed direction"; // 17;
+    public static final String NO_TURN = "No turn"; // 0; (Give no instruction at all)
+    public static final String GO_STRAIGHT = "Continue on"; //1; (Tell user to go straight!)
+    public static final String TURN_SLIGHT_RIGHT = "Make a slight right on to"; //2;
+    public static final String TURN_RIGHT = "Make a right on to"; // 3;
+    public static final String TURN_SHARP_RIGHT = "Make a sharp right on to"; // 4;
+    public static final String U_TURN = "U Turn"; // 5;
+    public static final String TURN_SHARP_LEFT = "Make a sharp left on to"; // 6;
+    public static final String TURN_LEFT = "Make a left on to"; // 7;
+    public static final String TURN_SLIGHT_LEFT = "Make a slight left on to"; // 8;
+    public static final String REACH_VIA_POINT = "Reach via point"; // 9;
+    public static final String HEAD_ON = "Head on"; // 10;
+    public static final String ENTER_ROUND_ABOUT = "Enter round about"; // 11;
+    public static final String LEAVE_ROUND_ABOUT = "Leave round about"; // 12;
+    public static final String STAY_ON_ROUND_ABOUT = "Stay on round about"; // 13;
+    public static final String START_AT_END_OF_STREET = "Start at end of street"; // 14;
+    public static final String REACHED_YOUR_DESTINATION = "You have reached your destination"; // 15;
+    public static final String ENTER_AGAINST_ALLOWED_DIRECTION = "Enter against allowed direction"; // 16;
+    public static final String LEAVE_AGAINST_ALLOWED_DIRECTION = "Leave against allowed direction"; // 17;
 
-    public static String[] decodedInstructions = { NoTurn, GoStraight, TurnSlightRight, TurnRight, TurnSharpRight, UTurn,
-            TurnSharpLeft, TurnLeft, TurnSlightLeft, ReachViaPoint, HeadOn, EnterRoundAbout, LeaveRoundAbout,
-            StayOnRoundAbout, StartAtEndOfStreet, ReachedYourDestination, EnterAgainstAllowedDirection,
-            LeaveAgainstAllowedDirection
+    public static String[] decodedInstructions = {NO_TURN, GO_STRAIGHT, TURN_SLIGHT_RIGHT,
+            TURN_RIGHT, TURN_SHARP_RIGHT, U_TURN, TURN_SHARP_LEFT, TURN_LEFT, TURN_SLIGHT_LEFT,
+            REACH_VIA_POINT, HEAD_ON, ENTER_ROUND_ABOUT, LEAVE_ROUND_ABOUT, STAY_ON_ROUND_ABOUT,
+            START_AT_END_OF_STREET, REACHED_YOUR_DESTINATION, ENTER_AGAINST_ALLOWED_DIRECTION,
+            LEAVE_AGAINST_ALLOWED_DIRECTION
     };
 
     public static double METERS_IN_MILE = 1609.0;
     public static double FEET_IN_MILE = 5280.0;
 
     private JSONArray json;
-    private int turn, distance;
+    private int turn, distanceInMeters;
     private double[] point = {};
 
     public Instruction(JSONArray json) {
@@ -67,52 +68,16 @@ public class Instruction {
         return json.getString(1);
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
+    public void setDistance(int distanceInMeters) {
+        this.distanceInMeters = distanceInMeters;
     }
 
     public int getDistance() {
-        return distance;
+        return distanceInMeters;
     }
 
-    public double getDistanceInMiles() {
-        return distance / METERS_IN_MILE;
-    }
-
-    public int getDistanceLessThanMileInFeet() {
-        return (int) Math.round(getDistanceInMiles() % 1 * FEET_IN_MILE);
-    }
-
-    public String getHumanDistance(Locale locale) {
-        double miles = getDistanceInMiles();
-        double remainder = miles % 1;
-        String distance = "";
-        if (Math.floor(miles) > 1) {
-            distance = String.valueOf((int) miles) + " miles and ";
-        }
-        if (remainder > 0.75) {
-            distance += "about \u00BE of a mile";
-        } else if (remainder > 0.5) {
-            distance += "about \u00BD a mile";
-        } else if (remainder > 0.25) {
-            distance += "about \u00BC of a mile";
-        } else if (remainder > 0.125) {
-            distance += "about \u215B of a mile";
-        } else {
-            distance += String.valueOf(getDistanceLessThanMileInFeet()) + " feet";
-        }
-        return distance;
-    }
-
-    public String getShortFormatDistance(Locale locale) {
-        final double distanceInMiles = getDistanceInMiles();
-        if (distanceInMiles < 1) {
-            return String.format(locale, "%d ft", getDistanceLessThanMileInFeet());
-        } else if (distanceInMiles == (int) distanceInMiles) {
-            return String.format(locale, "%d mi", (int) distanceInMiles);
-        } else {
-            return String.format(locale, "%.2f mi", distanceInMiles);
-        }
+    public String getFormattedDistance() {
+        return DistanceFormatter.format(distanceInMeters);
     }
 
     public String getDirection() {
@@ -155,30 +120,31 @@ public class Instruction {
     private String getFullInstructionPattern() {
         String controllingGluePhrase = "and continue on for";
         String pattern = "%s %s "+ controllingGluePhrase + " %s";
-        if (getHumanTurnInstruction().equals(HeadOn) ||
-                getHumanTurnInstruction().equals(GoStraight)) {
+        if (getHumanTurnInstruction().equals(HEAD_ON) ||
+                getHumanTurnInstruction().equals(GO_STRAIGHT)) {
             controllingGluePhrase = "for";
             pattern = "%s %s "+ controllingGluePhrase + " %s";
-        } else if (getHumanTurnInstruction().equals(ReachedYourDestination)) {
+        } else if (getHumanTurnInstruction().equals(REACHED_YOUR_DESTINATION)) {
             pattern = "%s %s";
         }
         return pattern;
     }
 
     public String getFullInstruction() {
-        return String.format(Locale.ENGLISH,
+        return String.format(Locale.US,
                 getFullInstructionPattern(),
                 getHumanTurnInstruction(),
-                getName(), getHumanDistance(Locale.ENGLISH));
+                getName(),
+                DistanceFormatter.format(distanceInMeters, true));
     }
 
     public String getSimpleInstruction() {
-        return String.format(Locale.ENGLISH, "%s %s", getHumanTurnInstruction(), getName());
+        return String.format(Locale.US, "%s %s", getHumanTurnInstruction(), getName());
     }
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "Instruction: (%.5f, %.5f) %s %s",
+        return String.format(Locale.US, "Instruction: (%.5f, %.5f) %s %s",
                 point[0], point[1], getHumanTurnInstruction(), getName());
     }
 
