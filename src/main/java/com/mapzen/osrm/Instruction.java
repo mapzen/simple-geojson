@@ -3,7 +3,6 @@ package com.mapzen.osrm;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import javax.print.DocFlavor;
 import java.util.Locale;
 
 public class Instruction {
@@ -36,7 +35,7 @@ public class Instruction {
     public static double FEET_IN_MILE = 5280.0;
 
     private JSONArray json;
-    private int turn, distance;
+    private int turn, distanceInMeters;
     private double[] point = {};
 
     public Instruction(JSONArray json) {
@@ -67,16 +66,16 @@ public class Instruction {
         return json.getString(1);
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
+    public void setDistance(int distanceInMeters) {
+        this.distanceInMeters = distanceInMeters;
     }
 
     public int getDistance() {
-        return distance;
+        return distanceInMeters;
     }
 
     public double getDistanceInMiles() {
-        return distance / METERS_IN_MILE;
+        return distanceInMeters / METERS_IN_MILE;
     }
 
     public int getDistanceLessThanMileInFeet() {
