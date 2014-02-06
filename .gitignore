@@ -1,5 +1,5 @@
 build
 .idea/
-geojson.iml
+*.iml
 out/
-
+local.properties
