@@ -32,208 +32,203 @@ public class InstructionTest {
 
     @Test
     public void isObject() throws Exception {
-        assert(instruction != null);
+        assertThat(instruction).isNotNull();
     }
 
     @Test
     public void hasTurnInstruction() throws Exception {
-        assert(instruction.getTurnInstruction() != 0);
+        assertThat(instruction.getTurnInstruction()).isNotEqualTo(0);
     }
 
     @Test
     public void hasCorrectTurnInstruction() throws Exception {
-        assert(instruction.getTurnInstruction() != 0);
+        assertThat(instruction.getTurnInstruction()).isNotEqualTo(0);
     }
 
     @Test
     public void turnInstructionHasNoTurn() {
         instruction.setTurnInstruction(0);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.NoTurn));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(NoTurn);
     }
 
     @Test
     public void turnInstructionHasGoStraight() {
         instruction.setTurnInstruction(1);
-        assert(instruction.getHumanTurnInstruction().equals(GoStraight));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(GoStraight);
     }
 
     @Test
     public void turnInstructionHasTurnSlightRight() {
         instruction.setTurnInstruction(2);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.TurnSlightRight));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnSlightRight);
     }
 
     @Test
     public void turnInstructionHasTurnRight() {
         instruction.setTurnInstruction(3);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.TurnRight));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnRight);
     }
 
     @Test
     public void turnInstructionHasTurnSharpRight() {
         instruction.setTurnInstruction(4);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.TurnSharpRight));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnSharpRight);
     }
 
     @Test
     public void turnInstructionHasUTurn() {
         instruction.setTurnInstruction(5);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.UTurn));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(UTurn);
     }
 
     @Test
     public void turnInstructionHasTurnSharpLeft() {
         instruction.setTurnInstruction(6);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.TurnSharpLeft));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnSharpLeft);
     }
 
     @Test
     public void turnInstructionHasTurnLeft() {
         instruction.setTurnInstruction(7);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.TurnLeft));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnLeft);
     }
 
     @Test
     public void turnInstructionHasTurnSlightLeft() {
         instruction.setTurnInstruction(8);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.TurnSlightLeft));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnSlightLeft);
     }
 
     @Test
     public void turnInstructionHasReachViaPoint() {
         instruction.setTurnInstruction(9);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.ReachViaPoint));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(ReachViaPoint);
     }
 
     @Test
     public void turnInstructionHasHeadOn() {
         instruction.setTurnInstruction(10);
-        assert(instruction.getHumanTurnInstruction().equals(HeadOn));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(HeadOn);
     }
 
     @Test
     public void turnInstructionHasEnterRoundAbout() {
         instruction.setTurnInstruction(11);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.EnterRoundAbout));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(EnterRoundAbout);
     }
 
     @Test
     public void turnInstructionHasLeaveRoundAbout() {
         instruction.setTurnInstruction(12);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.LeaveRoundAbout));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(LeaveRoundAbout);
     }
 
     @Test
     public void turnInstructionHasStayOnRoundAbout() {
         instruction.setTurnInstruction(13);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.StayOnRoundAbout));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(StayOnRoundAbout);
     }
 
     @Test
     public void turnInstructionHasStartAtEndOfStreet() {
         instruction.setTurnInstruction(14);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.StartAtEndOfStreet));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(StartAtEndOfStreet);
     }
 
     @Test
     public void turnInstructionHasReachedYourDestination() {
         instruction.setTurnInstruction(15);
-        assert(instruction.getHumanTurnInstruction().equals(ReachedYourDestination));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(ReachedYourDestination);
     }
 
     @Test
     public void turnInstructionHasEnterAgainstAllowedDirection() {
         instruction.setTurnInstruction(16);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.EnterAgainstAllowedDirection));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(EnterAgainstAllowedDirection);
     }
 
     @Test
     public void turnInstructionHasLeaveAgainstAllowedDirection() {
         instruction.setTurnInstruction(17);
-        assert(instruction.getHumanTurnInstruction().equals(Instruction.LeaveAgainstAllowedDirection));
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(LeaveAgainstAllowedDirection);
     }
 
     @Test
     public void hasName() throws Exception {
-        assert(instruction.getName() != null);
+        assertThat(instruction.getName()).isNotNull();
     }
 
     @Test
     public void hasCorrectName() throws Exception {
-        assert(instruction.getName().equals("19th Street"));
+        assertThat(instruction.getName()).isEqualTo("19th Street");
     }
 
     @Test
     public void hasDistance() throws Exception {
-        assert(instruction.getDistance() > -1);
+        assertThat(instruction.getDistance()).isGreaterThan(-1);
     }
 
     @Test
     public void hasCorrectDistance() throws Exception {
-        assert(instruction.getDistance() == 1609);
+        assertThat(instruction.getDistance()).isEqualTo(1609);
     }
 
     @Test
     public void hasDirection() throws Exception {
-        assert(instruction.getDirection() != null);
+        assertThat(instruction.getDirection()).isNotNull();
     }
 
     @Test
     public void hasCorrectDirection() throws Exception {
-        assert(instruction.getDirection().equals("SE"));
-    }
-
-    private Instruction getInstructionWithDirection(String dir) {
-        String json = "[10,\"\", 1609,0,0,\"1609m\",\"" + dir + "\",\"128\"]";
-        return new Instruction(new JSONArray(json));
+        assertThat(instruction.getDirection()).isEqualTo("SE");
     }
 
     @Test
     public void hasNdirectionAngle() throws Exception {
         Instruction i = getInstructionWithDirection("N");
-        assert(Float.compare(i.getDirectionAngle(), 0.0f) == 0);
+        assertThat(i.getDirectionAngle()).isEqualTo(0f);
     }
 
     @Test
     public void hasNEdirectionAngle() throws Exception {
         Instruction i = getInstructionWithDirection("NE");
-        assert(Float.compare(i.getDirectionAngle(), 315.0f) == 0);
+        assertThat(i.getDirectionAngle()).isEqualTo(315f);
     }
 
     @Test
     public void hasEdirectionAngle() throws Exception {
         Instruction i = getInstructionWithDirection("E");
-        assert(Float.compare(i.getDirectionAngle(), 270.0f) == 0);
+        assertThat(i.getDirectionAngle()).isEqualTo(270f);
     }
 
     @Test
     public void hasSEdirectionAngle() throws Exception {
         Instruction i = getInstructionWithDirection("SE");
-        assert(Float.compare(i.getDirectionAngle(), 225.0f) == 0);
+        assertThat(i.getDirectionAngle()).isEqualTo(225f);
     }
 
     @Test
     public void hasSdirectionAngle() throws Exception {
         Instruction i = getInstructionWithDirection("S");
-        assert(Float.compare(i.getDirectionAngle(), 180.0f) == 0);
+        assertThat(i.getDirectionAngle()).isEqualTo(180f);
     }
 
     @Test
     public void hasSWdirectionAngle() throws Exception {
         Instruction i = getInstructionWithDirection("SW");
-        assert(Float.compare(i.getDirectionAngle(), 135.0f) == 0);
+        assertThat(i.getDirectionAngle()).isEqualTo(135f);
     }
 
     @Test
     public void hasWdirectionAngle() throws Exception {
         Instruction i = getInstructionWithDirection("W");
-        assert(Float.compare(i.getDirectionAngle(), 90.0f) == 0);
+        assertThat(i.getDirectionAngle()).isEqualTo(90f);
     }
 
     @Test
     public void hasNWdirectionAngle() throws Exception {
         Instruction i = getInstructionWithDirection("NW");
-        assert(Float.compare(i.getDirectionAngle(), 45.0f) == 0);
+        assertThat(i.getDirectionAngle()).isEqualTo(45f);
     }
 
     @Test
@@ -241,7 +236,7 @@ public class InstructionTest {
         String json = "[10,\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
         JSONArray jsonArray = new JSONArray(json);
         instruction = new Instruction(jsonArray);
-        assert(instruction.getDirection().equals("SE"));
+        assertThat(instruction.getDirection()).isEqualTo("SE");
     }
 
     @Test
@@ -249,41 +244,20 @@ public class InstructionTest {
         String json = "[10,\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
         JSONArray jsonArray = new JSONArray(json);
         instruction = new Instruction(jsonArray);
-        assert(instruction.getBearing() == (360 - 128));
+        assertThat(instruction.getBearing()).isEqualTo(360 - 128);
     }
 
     @Test
     public void hasPointCoordinates() throws Exception {
-        assert(instruction.getPoint() != null);
+        assertThat(instruction.getPoint()).isNotNull();
     }
 
     @Test
     public void canSetCoordinates() throws Exception {
         double[] expected = {3.3, 4.4};
         instruction.setPoint(expected);
-        assert(instruction.getPoint() == expected);
+        assertThat(instruction.getPoint()).isEqualTo(expected);
 
-    }
-
-    public void setDistanceInMiles(double miles) {
-        int meters = (int) Math.round(Instruction.METERS_IN_MILE * miles);
-        instruction.setDistance(meters);
-    }
-
-    private Instruction getInstructionWithTurn(String turn) {
-        ArrayList<String> withIndex = new ArrayList<String>(decodedInstructions.length);
-        for(int i = 0; i < decodedInstructions.length; i++) {
-            withIndex.add(decodedInstructions[i]);
-        }
-        instruction.setTurnInstruction(withIndex.indexOf(turn));
-        return instruction;
-    }
-
-    private String getExpectedFullInstructionFor(Instruction currentInstruction, String pattern) {
-        return String.format(Locale.ENGLISH, pattern,
-                currentInstruction.getHumanTurnInstruction(),
-                currentInstruction.getName(),
-                DistanceFormatter.format(currentInstruction.getDistance(), true));
     }
 
     @Test
@@ -356,5 +330,28 @@ public class InstructionTest {
     public void getFullInstruction_shouldReturnNavigationDistance() throws Exception {
         instruction.setDistance(1);
         assertThat(instruction.getFullInstruction()).contains("now");
+    }
+
+    // Helper methods.
+
+    private Instruction getInstructionWithTurn(String turn) {
+        ArrayList<String> withIndex = new ArrayList<String>(decodedInstructions.length);
+        for(int i = 0; i < decodedInstructions.length; i++) {
+            withIndex.add(decodedInstructions[i]);
+        }
+        instruction.setTurnInstruction(withIndex.indexOf(turn));
+        return instruction;
+    }
+
+    private String getExpectedFullInstructionFor(Instruction currentInstruction, String pattern) {
+        return String.format(Locale.ENGLISH, pattern,
+                currentInstruction.getHumanTurnInstruction(),
+                currentInstruction.getName(),
+                DistanceFormatter.format(currentInstruction.getDistance(), true));
+    }
+
+    private Instruction getInstructionWithDirection(String dir) {
+        String json = "[10,\"\", 1609,0,0,\"1609m\",\"" + dir + "\",\"128\"]";
+        return new Instruction(new JSONArray(json));
     }
 }
