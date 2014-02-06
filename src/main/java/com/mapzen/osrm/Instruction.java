@@ -1,5 +1,6 @@
 package com.mapzen.osrm;
 
+import com.mapzen.geo.DistanceFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -74,44 +75,8 @@ public class Instruction {
         return distanceInMeters;
     }
 
-    public double getDistanceInMiles() {
-        return distanceInMeters / METERS_IN_MILE;
-    }
-
-    public int getDistanceLessThanMileInFeet() {
-        return (int) Math.round(getDistanceInMiles() % 1 * FEET_IN_MILE);
-    }
-
-    public String getHumanDistance(Locale locale) {
-        double miles = getDistanceInMiles();
-        double remainder = miles % 1;
-        String distance = "";
-        if (Math.floor(miles) > 1) {
-            distance = String.valueOf((int) miles) + " miles and ";
-        }
-        if (remainder > 0.75) {
-            distance += "about \u00BE of a mile";
-        } else if (remainder > 0.5) {
-            distance += "about \u00BD a mile";
-        } else if (remainder > 0.25) {
-            distance += "about \u00BC of a mile";
-        } else if (remainder > 0.125) {
-            distance += "about \u215B of a mile";
-        } else {
-            distance += String.valueOf(getDistanceLessThanMileInFeet()) + " feet";
-        }
-        return distance;
-    }
-
-    public String getShortFormatDistance(Locale locale) {
-        final double distanceInMiles = getDistanceInMiles();
-        if (distanceInMiles < 1) {
-            return String.format(locale, "%d ft", getDistanceLessThanMileInFeet());
-        } else if (distanceInMiles == (int) distanceInMiles) {
-            return String.format(locale, "%d mi", (int) distanceInMiles);
-        } else {
-            return String.format(locale, "%.2f mi", distanceInMiles);
-        }
+    public String getFormattedDistance() {
+        return DistanceFormatter.format(distanceInMeters);
     }
 
     public String getDirection() {
@@ -165,19 +130,20 @@ public class Instruction {
     }
 
     public String getFullInstruction() {
-        return String.format(Locale.ENGLISH,
+        return String.format(Locale.US,
                 getFullInstructionPattern(),
                 getHumanTurnInstruction(),
-                getName(), getHumanDistance(Locale.ENGLISH));
+                getName(),
+                DistanceFormatter.format(distanceInMeters, true));
     }
 
     public String getSimpleInstruction() {
-        return String.format(Locale.ENGLISH, "%s %s", getHumanTurnInstruction(), getName());
+        return String.format(Locale.US, "%s %s", getHumanTurnInstruction(), getName());
     }
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "Instruction: (%.5f, %.5f) %s %s",
+        return String.format(Locale.US, "Instruction: (%.5f, %.5f) %s %s",
                 point[0], point[1], getHumanTurnInstruction(), getName());
     }
 

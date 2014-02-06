@@ -1,5 +1,6 @@
 package com.mapzen.osrm;
 
+import com.mapzen.geo.DistanceFormatter;
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
@@ -173,13 +174,6 @@ public class InstructionTest {
     }
 
     @Test
-    public void hasDistanceInMiles() throws Exception {
-        assert(instruction.getDistanceInMiles() == 1);
-        instruction.setDistance(1609 * 4);
-        assert(instruction.getDistanceInMiles() == 4);
-    }
-
-    @Test
     public void hasDirection() throws Exception {
         assert(instruction.getDirection() != null);
     }
@@ -276,88 +270,6 @@ public class InstructionTest {
         instruction.setDistance(meters);
     }
 
-    @Test
-    public void testThreeQuartersApproximationDistance() throws Exception {
-        setDistanceInMiles(0.80);
-        String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "about \u00BE of a mile";
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testThreeQuartersApproximationDistanceOverMile() throws Exception {
-        setDistanceInMiles(3.80);
-        String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "3 miles and about \u00BE of a mile";
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testAboutHalfApproximationDistance() throws Exception {
-        setDistanceInMiles(0.73);
-        String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "about \u00BD a mile";
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testAboutHalfApproximationDistanceOverMile() throws Exception {
-        setDistanceInMiles(3.73);
-        String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "3 miles and about \u00BD a mile";
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testAboutOneQuarterOfAApproximationDistance() throws Exception {
-        setDistanceInMiles(0.45);
-        String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "about \u00BC of a mile";
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testAboutOneQuarterOfAApproximationDistanceOverMile() throws Exception {
-        setDistanceInMiles(3.45);
-        String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "3 miles and about \u00BC of a mile";
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testAboutOneEightOfAApproximationDistance() throws Exception {
-        setDistanceInMiles(0.130);
-        String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "about \u215B of a mile";
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testAboutOneEightOfAApproximationDistanceOverMile() throws Exception {
-        setDistanceInMiles(3.130);
-        String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        String expected = "3 miles and about \u215B of a mile";
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testFeetsApproximationDistance() throws Exception {
-        setDistanceInMiles(0.10000);
-        String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        int feet = (int) Math.round(0.10000 * Instruction.FEET_IN_MILE);
-        String expected = String.valueOf(feet) + " feet";
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testFeetsApproximationDistanceOverMile() throws Exception {
-        setDistanceInMiles(3.10000);
-        String actual = instruction.getHumanDistance(Locale.ENGLISH);
-        int feet = (int) Math.round(0.10000 * Instruction.FEET_IN_MILE);
-        String expected = "3 miles and " + String.valueOf(feet) + " feet";
-        assertEquals(expected, actual);
-    }
-
     private Instruction getInstructionWithTurn(String turn) {
         ArrayList<String> withIndex = new ArrayList<String>(decodedInstructions.length);
         for(int i = 0; i < decodedInstructions.length; i++) {
@@ -371,7 +283,7 @@ public class InstructionTest {
         return String.format(Locale.ENGLISH, pattern,
                 currentInstruction.getHumanTurnInstruction(),
                 currentInstruction.getName(),
-                currentInstruction.getHumanDistance(Locale.ENGLISH));
+                DistanceFormatter.format(currentInstruction.getDistance(), true));
     }
 
     @Test
@@ -435,20 +347,14 @@ public class InstructionTest {
     }
 
     @Test
-    public void getShortFormatDistance_shouldShowFeetWhenLessThanAMile() throws Exception {
-        instruction.setDistance(161);
-        assertThat(instruction.getShortFormatDistance(Locale.US)).isEqualTo("528 ft");
+    public void getFormattedDistance_shouldReturnListViewDistance() throws Exception {
+        instruction.setDistance(1);
+        assertThat(instruction.getFormattedDistance()).isEqualTo("3 ft");
     }
 
     @Test
-    public void getShortFormatDistance_shouldShowWholeNumberWhenEvenMileAmount() throws Exception {
-        instruction.setDistance(1609);
-        assertThat(instruction.getShortFormatDistance(Locale.US)).isEqualTo("1 mi");
-    }
-
-    @Test
-    public void getShortFormatDistance_shouldShowTwoDecimalPlacesWhenUneven() throws Exception {
-        instruction.setDistance(2154);
-        assertThat(instruction.getShortFormatDistance(Locale.US)).isEqualTo("1.34 mi");
+    public void getFullInstruction_shouldReturnNavigationDistance() throws Exception {
+        instruction.setDistance(1);
+        assertThat(instruction.getFullInstruction()).contains("now");
     }
 }
