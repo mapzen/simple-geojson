@@ -48,109 +48,109 @@ public class InstructionTest {
     @Test
     public void turnInstructionHasNoTurn() {
         instruction.setTurnInstruction(0);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(NoTurn);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(NO_TURN);
     }
 
     @Test
     public void turnInstructionHasGoStraight() {
         instruction.setTurnInstruction(1);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(GoStraight);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(GO_STRAIGHT);
     }
 
     @Test
     public void turnInstructionHasTurnSlightRight() {
         instruction.setTurnInstruction(2);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnSlightRight);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TURN_SLIGHT_RIGHT);
     }
 
     @Test
     public void turnInstructionHasTurnRight() {
         instruction.setTurnInstruction(3);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnRight);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TURN_RIGHT);
     }
 
     @Test
     public void turnInstructionHasTurnSharpRight() {
         instruction.setTurnInstruction(4);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnSharpRight);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TURN_SHARP_RIGHT);
     }
 
     @Test
     public void turnInstructionHasUTurn() {
         instruction.setTurnInstruction(5);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(UTurn);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(U_TURN);
     }
 
     @Test
     public void turnInstructionHasTurnSharpLeft() {
         instruction.setTurnInstruction(6);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnSharpLeft);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TURN_SHARP_LEFT);
     }
 
     @Test
     public void turnInstructionHasTurnLeft() {
         instruction.setTurnInstruction(7);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnLeft);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TURN_LEFT);
     }
 
     @Test
     public void turnInstructionHasTurnSlightLeft() {
         instruction.setTurnInstruction(8);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TurnSlightLeft);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(TURN_SLIGHT_LEFT);
     }
 
     @Test
     public void turnInstructionHasReachViaPoint() {
         instruction.setTurnInstruction(9);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(ReachViaPoint);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(REACH_VIA_POINT);
     }
 
     @Test
     public void turnInstructionHasHeadOn() {
         instruction.setTurnInstruction(10);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(HeadOn);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(HEAD_ON);
     }
 
     @Test
     public void turnInstructionHasEnterRoundAbout() {
         instruction.setTurnInstruction(11);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(EnterRoundAbout);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(ENTER_ROUND_ABOUT);
     }
 
     @Test
     public void turnInstructionHasLeaveRoundAbout() {
         instruction.setTurnInstruction(12);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(LeaveRoundAbout);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(LEAVE_ROUND_ABOUT);
     }
 
     @Test
     public void turnInstructionHasStayOnRoundAbout() {
         instruction.setTurnInstruction(13);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(StayOnRoundAbout);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(STAY_ON_ROUND_ABOUT);
     }
 
     @Test
     public void turnInstructionHasStartAtEndOfStreet() {
         instruction.setTurnInstruction(14);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(StartAtEndOfStreet);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(START_AT_END_OF_STREET);
     }
 
     @Test
     public void turnInstructionHasReachedYourDestination() {
         instruction.setTurnInstruction(15);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(ReachedYourDestination);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(REACHED_YOUR_DESTINATION);
     }
 
     @Test
     public void turnInstructionHasEnterAgainstAllowedDirection() {
         instruction.setTurnInstruction(16);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(EnterAgainstAllowedDirection);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(ENTER_AGAINST_ALLOWED_DIRECTION);
     }
 
     @Test
     public void turnInstructionHasLeaveAgainstAllowedDirection() {
         instruction.setTurnInstruction(17);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(LeaveAgainstAllowedDirection);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(LEAVE_AGAINST_ALLOWED_DIRECTION);
     }
 
     @Test
@@ -262,7 +262,7 @@ public class InstructionTest {
 
     @Test
     public void testHeadOnFullInstruction() throws Exception {
-        Instruction currentInstruction = getInstructionWithTurn(HeadOn);
+        Instruction currentInstruction = getInstructionWithTurn(HEAD_ON);
         String actual = currentInstruction.getFullInstruction();
         assertEquals(getExpectedFullInstructionFor(currentInstruction,
                 "%s %s for %s"), actual);
@@ -270,7 +270,7 @@ public class InstructionTest {
 
     @Test
     public void testGoStraightFullInstruction() throws Exception {
-        Instruction currentInstruction = getInstructionWithTurn(GoStraight);
+        Instruction currentInstruction = getInstructionWithTurn(GO_STRAIGHT);
         String actual = currentInstruction.getFullInstruction();
         assertEquals(getExpectedFullInstructionFor(currentInstruction,
                 "%s %s for %s"), actual);
@@ -278,7 +278,7 @@ public class InstructionTest {
 
     @Test
     public void testReachedYourDestinationFullInstruction() throws Exception {
-        Instruction currentInstruction = getInstructionWithTurn(ReachedYourDestination);
+        Instruction currentInstruction = getInstructionWithTurn(REACHED_YOUR_DESTINATION);
         String actual = currentInstruction.getFullInstruction();
         assertEquals(getExpectedFullInstructionFor(currentInstruction,
                 "%s %s"), actual);
@@ -289,9 +289,9 @@ public class InstructionTest {
         Instruction currentInstruction;
         String actual;
         for(int i = 0; i < decodedInstructions.length; i++) {
-           if (!decodedInstructions[i].equals(ReachedYourDestination) &&
-                   !decodedInstructions[i].equals(GoStraight) &&
-                       !decodedInstructions[i].equals(HeadOn)) {
+           if (!decodedInstructions[i].equals(REACHED_YOUR_DESTINATION) &&
+                   !decodedInstructions[i].equals(GO_STRAIGHT) &&
+                       !decodedInstructions[i].equals(HEAD_ON)) {
                currentInstruction = getInstructionWithTurn(decodedInstructions[i]);
                actual = currentInstruction.getFullInstruction();
                assertEquals(getExpectedFullInstructionFor(currentInstruction,
