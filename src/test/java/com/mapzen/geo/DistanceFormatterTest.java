@@ -43,7 +43,7 @@ public class DistanceFormatterTest {
     }
 
     @Test
-    public void distanceZero_shouldReturnZeroFeet() throws Exception {
-        assertThat(format(0)).isEqualTo("0 ft");
+    public void distanceZero_shouldReturnEmptyString() throws Exception {
+        assertThat(format(0)).isEmpty();
     }
 }
