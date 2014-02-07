@@ -42,7 +42,9 @@ public final class DistanceFormatter {
      */
     public static String format(int distanceInMeters, boolean realTime) {
         double distanceInFeet = distanceInMeters / METERS_IN_ONE_FOOT;
-        if (distanceInFeet < 10) {
+        if (distanceInFeet == 0) {
+            return "";
+        } else if (distanceInFeet < 10) {
             return formatDistanceLessThanTenFeet(distanceInFeet, realTime);
         } else if (distanceInFeet < FEET_IN_ONE_MILE / 10) {
             return formatDistanceOverTenFeet(distanceInFeet);
