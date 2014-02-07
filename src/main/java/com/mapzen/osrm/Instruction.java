@@ -206,7 +206,6 @@ public class Instruction {
                 Math.cos(lat1) * Math.sin(dist13) * Math.cos(brng13));
         double dLon13 = Math.atan2(Math.sin(brng13) * Math.sin(dist13) * Math.cos(lat1),
                 Math.cos(dist13) - Math.sin(lat1) * Math.sin(lat3));
-        //double lon3 = lon1+dLon13;
         double lon3 = ((lon1 + dLon13) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;  // normalise to -180..+180º
 
         double[] point = {Math.toDegrees(lat3), Math.toDegrees(lon3)};
