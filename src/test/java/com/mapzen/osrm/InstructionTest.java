@@ -1,6 +1,7 @@
 package com.mapzen.osrm;
 
 import com.mapzen.geo.DistanceFormatter;
+import org.hamcrest.CoreMatchers;
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import java.util.Locale;
 
 import static com.mapzen.osrm.Instruction.*;
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 
 public class InstructionTest {
@@ -353,5 +355,17 @@ public class InstructionTest {
     private Instruction getInstructionWithDirection(String dir) {
         String json = "[10,\"\", 1609,0,0,\"1609m\",\"" + dir + "\",\"128\"]";
         return new Instruction(new JSONArray(json));
+    }
+
+    @Test
+    public void shouldSnapTo() throws Exception {
+        double[] currentPoint = {40.660514,-73.989501};
+        double[] referencePoint = {40.661139,-73.990051};
+        instruction.setPoint(referencePoint);
+        double[] onRoad = instruction.snapTo(currentPoint, -90);
+        double lat = onRoad[0];
+        double lon = onRoad[1];
+        assertThat(lat).isEqualTo(40.660699685769025);
+        assertThat(lon).isEqualTo(-73.98930975653286);
     }
 }
