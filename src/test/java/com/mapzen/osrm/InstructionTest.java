@@ -365,7 +365,7 @@ public class InstructionTest {
         double[] onRoad = instruction.snapTo(currentPoint, -90);
         double lat = onRoad[0];
         double lon = onRoad[1];
-        assert(lat == 40.660699685769025);
-        assert(lon == -73.98930975653286);
+        assertThat(lat).isEqualTo(40.660699685769025);
+        assertThat(lon).isEqualTo(-73.98930975653286);
     }
 }
