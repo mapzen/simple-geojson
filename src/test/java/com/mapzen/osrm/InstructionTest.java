@@ -5,7 +5,6 @@ import org.hamcrest.CoreMatchers;
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
-import sun.plugin.dom.core.CoreConstants;
 
 import java.util.ArrayList;
 import java.util.Locale;

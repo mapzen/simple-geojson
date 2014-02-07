@@ -119,21 +119,12 @@ public class Instruction {
 
     private String getFullInstructionPattern() {
         String controllingGluePhrase = "and continue on for";
-<<<<<<< HEAD
         String pattern = "%s %s "+ controllingGluePhrase + " %s";
         if (getHumanTurnInstruction().equals(HEAD_ON) ||
                 getHumanTurnInstruction().equals(GO_STRAIGHT)) {
             controllingGluePhrase = "for";
             pattern = "%s %s "+ controllingGluePhrase + " %s";
         } else if (getHumanTurnInstruction().equals(REACHED_YOUR_DESTINATION)) {
-=======
-        String pattern = "%s %s " + controllingGluePhrase + " %s";
-        if (getHumanTurnInstruction().equals(HeadOn) ||
-                getHumanTurnInstruction().equals(GoStraight)) {
-            controllingGluePhrase = "for";
-            pattern = "%s %s " + controllingGluePhrase + " %s";
-        } else if (getHumanTurnInstruction().equals(ReachedYourDestination)) {
->>>>>>> translates formula found at http://www.movable-type.co.uk/scripts/latlong.html
             pattern = "%s %s";
         }
         return pattern;
