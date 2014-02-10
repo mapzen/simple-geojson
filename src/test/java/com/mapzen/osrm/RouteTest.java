@@ -16,7 +16,6 @@ public class RouteTest {
     @Before
     public void setup() throws Exception {
         route = getRoute("brooklyn");
-        //route = new Route(routeJson);
     }
 
     @Test
@@ -140,15 +139,5 @@ public class RouteTest {
             -73.989332
         };
         assertThat(route.getStartCoordinates()).isEqualTo(expected);
-    }
-
-    @Test
-    public void shouldHaveEndCorrdinates() throws Exception {
-        route = getRoute("brooklyn");
-        double[] expected = {
-            40.666308,
-            -73.989093
-        };
-        assertThat(route.getEndCoordinates()).isEqualTo(expected);
     }
 }

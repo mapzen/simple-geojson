@@ -105,15 +105,6 @@ public class Route {
         return coordinates;
     }
 
-    public double[] getEndCoordinates() {
-        JSONArray points = getViaPoints().getJSONArray(1);
-        double[] coordinates = {
-            points.getDouble(0),
-            points.getDouble(1)
-        };
-        return coordinates;
-    }
-
     private JSONArray getViaPoints() {
         return jsonObject.getJSONArray("via_points");
     }
