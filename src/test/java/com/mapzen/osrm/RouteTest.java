@@ -20,52 +20,45 @@ public class RouteTest {
 
     @Test
     public void isObject() throws Exception {
-        assert(route != null);
+        assertThat(route).isNotNull();
     }
 
     @Test
     public void hasTotalDistance() throws Exception {
-        assert(route.getTotalDistance() != 0);
+        assertThat(route.getTotalDistance()).isNotEqualTo(0);
     }
 
     @Test
     public void hasCorrectTotalDistance() throws Exception {
-        assert(route.getTotalDistance() == 1721);
+        assertThat(route.getTotalDistance()).isEqualTo(1721);
     }
 
     @Test
     public void hasTotalTime() throws Exception {
-        assert(route.getTotalTime() != 0);
+        assertThat(route.getTotalTime()).isNotEqualTo(0);
     }
 
     @Test
     public void hasCorrectTotalTime() throws Exception {
-        assert(route.getTotalTime() == 128);
+        assertThat(route.getTotalTime()).isEqualTo(128);
     }
 
     @Test
     public void hasRouteInstructions() throws Exception {
         ArrayList<Instruction> instructions = route.getRouteInstructions();
-        assert(instructions.size() == 6);
+        assertThat(instructions).hasSize(6);
     }
 
     @Test
     public void hasGeometry() throws Exception {
-        assert(route.getGeometry() != null);
-    }
-
-    private Route getRoute(String name) throws Exception {
-        String fileName = System.getProperty("user.dir");
-        File file = new File(fileName + "/src/test/fixtures/" + name + ".route");
-        String content = FileUtils.readFileToString(file, "UTF-8");
-        return new Route(content);
+        assertThat(route.getGeometry()).isNotNull();
     }
 
     @Test
     public void hasCorrectNumberOfInstructionsInBrooklyn() throws Exception {
         // TODO path to fixtures setup
         Route brooklynRoute = getRoute("brooklyn");
-        assert(brooklynRoute.getRouteInstructions().size() == 6);
+        assertThat(brooklynRoute.getRouteInstructions()).hasSize(6);
     }
 
     @Test
@@ -85,8 +78,8 @@ public class RouteTest {
             double[] instructionPoint = instruction.getPoint();
 
             // ceiling it as the percision of the double is not identical on the sixth digit
-            assert(Double.compare(Math.ceil(instructionPoint[0]), Math.ceil(expectedPoint[0])) == 0);
-            assert(Double.compare(Math.ceil(instructionPoint[1]), Math.ceil(expectedPoint[1])) == 0);
+            assertThat(Math.ceil(instructionPoint[0])).isEqualTo(Math.ceil(expectedPoint[0]));
+            assertThat(Math.ceil(instructionPoint[1])).isEqualTo(Math.ceil(expectedPoint[1]));
         }
     }
 
@@ -105,30 +98,30 @@ public class RouteTest {
         for(Instruction instruction: brooklynRoute.getRouteInstructions()) {
             String expectedDirection = expectedPoints.next();
             String instructionDirection = instruction.getHumanTurnInstruction();
-            assert(instructionDirection.equals(expectedDirection));
+            assertThat(instructionDirection).isEqualTo(expectedDirection);
         }
     }
 
     @Test
     public void testHasRoute() throws Exception {
-        assert(route.getStatus() == 0);
+        assertThat(route.getStatus()).isEqualTo(0);
     }
 
     @Test
     public void testHasRouteMethod() throws Exception {
-        assert(route.foundRoute());
+        assertThat(route.foundRoute()).isTrue();
     }
 
     @Test
     public void testHasNoRoute() throws Exception {
         route = getRoute("unsuccessful");
-        assert(route.getStatus() == 207);
+        assertThat(route.getStatus()).isEqualTo(207);
     }
 
     @Test
     public void testHasNoRouteMethod() throws Exception {
         route = getRoute("unsuccessful");
-        assert(!route.foundRoute());
+        assertThat(route.foundRoute()).isFalse();
     }
 
     @Test
@@ -140,4 +133,12 @@ public class RouteTest {
         };
         assertThat(route.getStartCoordinates()).isEqualTo(expected);
     }
+
+    private Route getRoute(String name) throws Exception {
+        String fileName = System.getProperty("user.dir");
+        File file = new File(fileName + "/src/test/fixtures/" + name + ".route");
+        String content = FileUtils.readFileToString(file, "UTF-8");
+        return new Route(content);
+    }
+
 }
