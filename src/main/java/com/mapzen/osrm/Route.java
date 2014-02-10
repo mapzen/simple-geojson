@@ -96,6 +96,28 @@ public class Route {
         return decodePolyline(jsonObject.getString("route_geometry"));
     }
 
+    public double[] getStartCoordinates() {
+        JSONArray points = getViaPoints().getJSONArray(0);
+        double[] coordinates = {
+            points.getDouble(0),
+            points.getDouble(1)
+        };
+        return coordinates;
+    }
+
+    public double[] getEndCoordinates() {
+        JSONArray points = getViaPoints().getJSONArray(1);
+        double[] coordinates = {
+            points.getDouble(0),
+            points.getDouble(1)
+        };
+        return coordinates;
+    }
+
+    private JSONArray getViaPoints() {
+        return jsonObject.getJSONArray("via_points");
+    }
+
     private JSONObject getSumary() throws JSONException {
        return jsonObject.getJSONObject("route_summary");
     }
