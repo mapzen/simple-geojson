@@ -1,6 +1,21 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.2'
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'java-library-distribution'
-apply from: 'http://www.tellurianring.com/projects/gradle-plugins/gradle-templates/1.3/apply.groovy'
+apply plugin: 'maven'
+apply plugin: 'nexus'
+
+group = 'com.mapzen'
+version = '0.1-SNAPSHOT'
 
 defaultTasks = ['clean', 'test', 'jar']
 
@@ -13,4 +28,16 @@ dependencies {
     testCompile 'junit:junit:4.10'
     testCompile 'org.apache.commons:commons-io:1.3.2'
     testCompile 'org.easytesting:fest-assert-core:2.0M10'
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.artifactId = 'geojson'
+    }
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        pom.artifactId = 'geojson'
+    }
 }
