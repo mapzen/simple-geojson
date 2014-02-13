@@ -1,7 +1,7 @@
 package com.mapzen.osrm;
 
 import com.mapzen.geo.DistanceFormatter;
-import org.hamcrest.CoreMatchers;
+
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +11,6 @@ import java.util.Locale;
 
 import static com.mapzen.osrm.Instruction.*;
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 
 public class InstructionTest {
@@ -242,11 +241,19 @@ public class InstructionTest {
     }
 
     @Test
+    public void hasRotationBearingAngle() throws Exception {
+        String json = "[10,\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
+        JSONArray jsonArray = new JSONArray(json);
+        instruction = new Instruction(jsonArray);
+        assertThat(instruction.getRotationBearing()).isEqualTo(360 - 128);
+    }
+
+    @Test
     public void hasBearingAngle() throws Exception {
         String json = "[10,\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
         JSONArray jsonArray = new JSONArray(json);
         instruction = new Instruction(jsonArray);
-        assertThat(instruction.getBearing()).isEqualTo(360 - 128);
+        assertThat(instruction.getBearing()).isEqualTo(128);
     }
 
     @Test
