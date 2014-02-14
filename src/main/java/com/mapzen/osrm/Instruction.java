@@ -105,8 +105,12 @@ public class Instruction {
         return angle;
     }
 
-    public int getBearing() {
+    public int getRotationBearing() {
         return 360 - json.getInt(7);
+    }
+
+    public int getBearing() {
+        return json.getInt(7);
     }
 
     public double[] getPoint() {
