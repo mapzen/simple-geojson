@@ -33,9 +33,6 @@ public class Instruction {
             LEAVE_AGAINST_ALLOWED_DIRECTION
     };
 
-    public static double METERS_IN_MILE = 1609.0;
-    public static double FEET_IN_MILE = 5280.0;
-
     private JSONArray json;
     private int turn, distanceInMeters;
     private double[] point = {};
@@ -45,10 +42,13 @@ public class Instruction {
             throw new JSONException("too few arguments");
         }
         this.json = json;
-        setTurnInstruction(json.getInt(0));
+        setTurnInstruction(parseTurnInstruction(json));
         setDistance(json.getInt(2));
     }
 
+    /**
+     * Used for testing. Do not remove.
+     */
     protected Instruction() {
     }
 
@@ -214,5 +214,10 @@ public class Instruction {
 
         double[] point = {Math.toDegrees(lat3), Math.toDegrees(lon3)};
         return point;
+    }
+    private int parseTurnInstruction(JSONArray json) {
+        String turn = json.getString(0);
+        String[] split = turn.split("-");
+        return Integer.valueOf(split[0]);
     }
 }

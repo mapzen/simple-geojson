@@ -9,26 +9,56 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static com.mapzen.osrm.Instruction.*;
+import static com.mapzen.osrm.Instruction.ENTER_AGAINST_ALLOWED_DIRECTION;
+import static com.mapzen.osrm.Instruction.ENTER_ROUND_ABOUT;
+import static com.mapzen.osrm.Instruction.GO_STRAIGHT;
+import static com.mapzen.osrm.Instruction.HEAD_ON;
+import static com.mapzen.osrm.Instruction.LEAVE_AGAINST_ALLOWED_DIRECTION;
+import static com.mapzen.osrm.Instruction.LEAVE_ROUND_ABOUT;
+import static com.mapzen.osrm.Instruction.NO_TURN;
+import static com.mapzen.osrm.Instruction.REACHED_YOUR_DESTINATION;
+import static com.mapzen.osrm.Instruction.REACH_VIA_POINT;
+import static com.mapzen.osrm.Instruction.START_AT_END_OF_STREET;
+import static com.mapzen.osrm.Instruction.STAY_ON_ROUND_ABOUT;
+import static com.mapzen.osrm.Instruction.TURN_LEFT;
+import static com.mapzen.osrm.Instruction.TURN_RIGHT;
+import static com.mapzen.osrm.Instruction.TURN_SHARP_LEFT;
+import static com.mapzen.osrm.Instruction.TURN_SHARP_RIGHT;
+import static com.mapzen.osrm.Instruction.TURN_SLIGHT_LEFT;
+import static com.mapzen.osrm.Instruction.TURN_SLIGHT_RIGHT;
+import static com.mapzen.osrm.Instruction.U_TURN;
+import static com.mapzen.osrm.Instruction.decodedInstructions;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class InstructionTest {
+    private static final JSONArray JSON = new JSONArray("[\n" +
+            "\"10\",\n" +
+            "\"19th Street\",\n" +
+            "1609,\n" +
+            "0,\n" +
+            "0,\n" +
+            "\"1609m\",\n" +
+            "\"SE\",\n" +
+            "128\n" +
+            "]\n");
+
+    private static final JSONArray NON_INT_TURN_JSON = new JSONArray("[\n" +
+            "\"11-1\",\n" +
+            "\"19th Street\",\n" +
+            "1609,\n" +
+            "0,\n" +
+            "0,\n" +
+            "\"1609m\",\n" +
+            "\"SE\",\n" +
+            "128\n" +
+            "]\n");
+
     private Instruction instruction;
+
     @Before
     public void setup() throws Exception {
-        String json = "        [\n" +
-                "            \"10\",\n" +
-                "            \"19th Street\",\n" +
-                "            1609,\n" +
-                "            0,\n" +
-                "            0,\n" +
-                "            \"1609m\",\n" +
-                "            \"SE\",\n" +
-                "            128\n" +
-                "        ]\n";
-        JSONArray jsonArray = new JSONArray(json);
-        instruction = new Instruction(jsonArray);
+        instruction = new Instruction(JSON);
     }
 
     @Test
@@ -234,7 +264,7 @@ public class InstructionTest {
 
     @Test
     public void hasDirectionAngle() throws Exception {
-        String json = "[10,\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
+        String json = "[\"10\",\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
         JSONArray jsonArray = new JSONArray(json);
         instruction = new Instruction(jsonArray);
         assertThat(instruction.getDirection()).isEqualTo("SE");
@@ -242,7 +272,7 @@ public class InstructionTest {
 
     @Test
     public void hasRotationBearingAngle() throws Exception {
-        String json = "[10,\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
+        String json = "[\"10\",\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
         JSONArray jsonArray = new JSONArray(json);
         instruction = new Instruction(jsonArray);
         assertThat(instruction.getRotationBearing()).isEqualTo(360 - 128);
@@ -250,7 +280,7 @@ public class InstructionTest {
 
     @Test
     public void hasBearingAngle() throws Exception {
-        String json = "[10,\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
+        String json = "[\"10\",\"\", 1609,0,0,\"1609m\",\"SE\",\"128\"]";
         JSONArray jsonArray = new JSONArray(json);
         instruction = new Instruction(jsonArray);
         assertThat(instruction.getBearing()).isEqualTo(128);
@@ -341,6 +371,13 @@ public class InstructionTest {
         assertThat(instruction.getFullInstruction()).contains("now");
     }
 
+    @Test
+    public void shouldHandleNonIntegerTurnInstruction() throws Exception {
+        instruction = new Instruction(NON_INT_TURN_JSON);
+        assertThat(instruction.getHumanTurnInstruction())
+                .isEqualTo(ENTER_ROUND_ABOUT);
+    }
+
     // Helper methods.
 
     private Instruction getInstructionWithTurn(String turn) {
@@ -360,7 +397,7 @@ public class InstructionTest {
     }
 
     private Instruction getInstructionWithDirection(String dir) {
-        String json = "[10,\"\", 1609,0,0,\"1609m\",\"" + dir + "\",\"128\"]";
+        String json = "[\"10\",\"\", 1609,0,0,\"1609m\",\"" + dir + "\",\"128\"]";
         return new Instruction(new JSONArray(json));
     }
 
