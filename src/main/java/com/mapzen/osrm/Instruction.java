@@ -121,7 +121,7 @@ public class Instruction {
         this.point = point;
     }
 
-    private String getFullInstructionPattern() {
+    private String getFullInstructionBeforePattern() {
         String controllingGluePhrase = "and continue on for";
         String pattern = "%s %s "+ controllingGluePhrase + " %s";
         if (getHumanTurnInstruction().equals(HEAD_ON) ||
@@ -135,11 +135,24 @@ public class Instruction {
     }
 
     public String getFullInstruction() {
+        // quick alias
+        return getFullInstructionBeforeAction();
+    }
+
+    public String getFullInstructionBeforeAction() {
         return String.format(Locale.US,
-                getFullInstructionPattern(),
+                getFullInstructionBeforePattern(),
                 getHumanTurnInstruction(),
                 getName(),
                 DistanceFormatter.format(distanceInMeters, true));
+    }
+
+    public String getFullInstructionAfterAction() {
+        if (getHumanTurnInstruction().equals(REACHED_YOUR_DESTINATION)) {
+            return getFullInstructionBeforeAction();
+        }
+        String pattern = "Continue on %s for %s";
+        return String.format(Locale.US, pattern, getName(), DistanceFormatter.format(getDistance(), true));
     }
 
     public String getSimpleInstruction() {
