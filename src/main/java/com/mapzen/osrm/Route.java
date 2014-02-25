@@ -114,6 +114,7 @@ public class Route {
     }
 
     private ArrayList<double[]> decodePolyline(String encoded) {
+        double[] lastPair = {};
         if (poly == null) {
             poly = new ArrayList<double[]>();
             int index = 0, len = encoded.length();
@@ -139,13 +140,18 @@ public class Route {
                 lng += dlng;
                 double x = (double) lat / 1E6;
                 double y = (double) lng / 1E6;
-                double[] pair = {x, y, 0};
+                double[] pair = {x, y, 0, 0};
                 if (!poly.isEmpty()) {
                     double[] lastElement = poly.get(poly.size()-1);
                     double distance = distanceBetweenPoints(pair, lastElement);
                     double totalDistance = distance + lastElement[2];
                     pair[2] = totalDistance;
+                    if(lastPair.length > 0) {
+                        lastPair[3] = RouteHelper.getBearing(lastPair, pair);
+                    }
                 }
+
+                lastPair = pair;
                 poly.add(pair);
             }
         }
