@@ -7,6 +7,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Route {
+    public static final int KEY_LAT = 0;
+    public static final int KEY_LNG = 1;
+    public static final int KEY_TOTAL_DISTANCE = 2;
+    public static final int KEY_BEARING = 3;
+    public static final int KEY_LEG_DISTANCE = 4;
     private ArrayList<double[]> poly = null;
     private ArrayList<Instruction> turnByTurn = null;
     private JSONArray instructions;
@@ -72,7 +77,7 @@ public class Route {
             }
             Instruction instruction = turnByTurn.get(marker);
             if(pre != null) {
-                distance = f[2] - pre[2];
+                distance = f[KEY_TOTAL_DISTANCE] - pre[KEY_TOTAL_DISTANCE];
                 totalDistance += distance;
             }
             // this needs the previous distance marker hence minus one
@@ -140,16 +145,18 @@ public class Route {
                 lng += dlng;
                 double x = (double) lat / 1E6;
                 double y = (double) lng / 1E6;
-                double[] pair = {x, y, 0, 0, 0};
+                double[] pair = {0, 0, 0, 0, 0};
+                pair[KEY_LAT] = x;
+                pair[KEY_LNG] = y;
                 if (!poly.isEmpty()) {
                     double[] lastElement = poly.get(poly.size()-1);
                     double distance = distanceBetweenPoints(pair, lastElement);
-                    double totalDistance = distance + lastElement[2];
-                    pair[2] = totalDistance;
+                    double totalDistance = distance + lastElement[KEY_TOTAL_DISTANCE];
+                    pair[KEY_TOTAL_DISTANCE] = totalDistance;
                     if(lastPair.length > 0) {
-                        lastPair[3] = RouteHelper.getBearing(lastPair, pair);
+                        lastPair[KEY_BEARING] = RouteHelper.getBearing(lastPair, pair);
                     }
-                    pair[4] = distance;
+                    pair[KEY_LEG_DISTANCE] = distance;
                 }
 
                 lastPair = pair;
@@ -188,7 +195,7 @@ public class Route {
     public double[] snapToRoute(double[] originalPoint) {
         int sizeOfPoly = poly.size();
 
-        // we've exhousted options
+        // we have exhausted options
         if(currentLeg >= sizeOfPoly) {
             return null;
         }
@@ -199,29 +206,25 @@ public class Route {
         double distanceToDestination = distanceBetweenPoints(destination, originalPoint);
         if (Math.floor(distanceToDestination) < 50) {
             return new double[] {
-                    destination[0],
-                    destination[1]
+                    destination[KEY_LAT],
+                    destination[KEY_LNG]
             };
         }
 
         double[] current = poly.get(currentLeg);
-        double[] fixedPoint = snapTo(current, originalPoint, current[3]);
+        double[] fixedPoint = snapTo(current, originalPoint, current[KEY_BEARING]);
         if (fixedPoint == null) {
-            return new double[] {current[0], current[1]};
+            return new double[] {current[KEY_LAT], current[KEY_LNG]};
         } else {
             double distance = distanceBetweenPoints(originalPoint, fixedPoint);
                                                /// UGH somewhat arbritrary
-            if (Math.floor(distance) > Math.floor(10.0) || distance > current[4]) {
+            if (Math.floor(distance) > Math.floor(10.0)
+                    || distance > current[KEY_LEG_DISTANCE]) {
                 ++currentLeg;
                 return snapToRoute(originalPoint);
             }
         }
         return fixedPoint;
-        // initial snap
-        // return beginning
-        // too far away from beginning go to next
-        // which Leg
-        //return getStartCoordinates();
     }
 
     private double[] snapTo(double[] turnPoint, double[] location, double turnBearing) {
