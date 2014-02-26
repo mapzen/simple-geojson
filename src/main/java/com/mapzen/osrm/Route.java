@@ -140,7 +140,7 @@ public class Route {
                 lng += dlng;
                 double x = (double) lat / 1E6;
                 double y = (double) lng / 1E6;
-                double[] pair = {x, y, 0, 0};
+                double[] pair = {x, y, 0, 0, 0};
                 if (!poly.isEmpty()) {
                     double[] lastElement = poly.get(poly.size()-1);
                     double distance = distanceBetweenPoints(pair, lastElement);
@@ -149,6 +149,7 @@ public class Route {
                     if(lastPair.length > 0) {
                         lastPair[3] = RouteHelper.getBearing(lastPair, pair);
                     }
+                    pair[4] = distance;
                 }
 
                 lastPair = pair;
@@ -174,4 +175,126 @@ public class Route {
         return (Math.PI / 180) * val;
     }
 
+    private int currentLeg = 0;
+
+    public int getCurrentLeg() {
+        return currentLeg;
+    }
+
+    public void rewind() {
+        currentLeg = 0;
+    }
+
+    public double[] snapToRoute(double[] originalPoint) {
+        int sizeOfPoly = poly.size();
+
+        // we've exhousted options
+        if(currentLeg >= sizeOfPoly) {
+            return null;
+        }
+
+        double[] destination = poly.get(sizeOfPoly-1);
+
+        // if close to destination
+        double distanceToDestination = distanceBetweenPoints(destination, originalPoint);
+        if (Math.floor(distanceToDestination) < 50) {
+            return new double[] {
+                    destination[0],
+                    destination[1]
+            };
+        }
+
+        double[] current = poly.get(currentLeg);
+        double[] fixedPoint = snapTo(current, originalPoint, current[3]);
+        if (fixedPoint == null) {
+            return new double[] {current[0], current[1]};
+        } else {
+            double distance = distanceBetweenPoints(originalPoint, fixedPoint);
+                                               /// UGH somewhat arbritrary
+            if (Math.floor(distance) > Math.floor(10.0) || distance > current[4]) {
+                ++currentLeg;
+                return snapToRoute(originalPoint);
+            }
+        }
+        return fixedPoint;
+        // initial snap
+        // return beginning
+        // too far away from beginning go to next
+        // which Leg
+        //return getStartCoordinates();
+    }
+
+    private double[] snapTo(double[] turnPoint, double[] location, double turnBearing) {
+        double[] correctedLocation = snapTo(turnPoint, location, turnBearing, 90);
+        if (correctedLocation == null) {
+            correctedLocation = snapTo(turnPoint, location, turnBearing, -90);
+        }
+        double distance;
+        if (correctedLocation != null) {
+            distance = distanceBetweenPoints(correctedLocation, location);
+            if(Math.round(distance) > 1000) {
+                return null;
+            }
+        }
+
+        return correctedLocation;
+    }
+
+
+    private double[] snapTo(double[] turnPoint, double[] location, double turnBearing, int offset) {
+        double lat1 = Math.toRadians(turnPoint[0]);
+        double lon1 = Math.toRadians(turnPoint[1]);
+        double lat2 = Math.toRadians(location[0]);
+        double lon2 = Math.toRadians(location[1]);
+
+        double brng13 = Math.toRadians(turnBearing);
+        double brng23 = Math.toRadians(turnBearing + offset);
+        double dLat = lat2 - lat1;
+        double dLon = lon2 - lon1;
+
+        double dist12 = 2 * Math.asin(Math.sqrt(Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2)));
+        if (dist12 == 0) {
+            return null;
+        }
+
+        // initial/final bearings between points
+        double brngA = Math.acos((Math.sin(lat2) - Math.sin(lat1) * Math.cos(dist12)) /
+                (Math.sin(dist12) * Math.cos(lat1)));
+
+        double brngB = Math.acos((Math.sin(lat1) - Math.sin(lat2) * Math.cos(dist12)) /
+                (Math.sin(dist12) * Math.cos(lat2)));
+
+        double brng12, brng21;
+        if (Math.sin(lon2 - lon1) > 0) {
+            brng12 = brngA;
+            brng21 = 2 * Math.PI - brngB;
+        } else {
+            brng12 = 2 * Math.PI - brngA;
+            brng21 = brngB;
+        }
+
+        double alpha1 = (brng13 - brng12 + Math.PI) % (2 * Math.PI) - Math.PI;  // angle 2-1-3
+        double alpha2 = (brng21 - brng23 + Math.PI) % (2 * Math.PI) - Math.PI;  // angle 1-2-3
+
+        if (Math.sin(alpha1) == 0 && Math.sin(alpha2) == 0) {
+            return null;  // infinite intersections
+        }
+        if (Math.sin(alpha1) * Math.sin(alpha2) < 0) {
+            return null;       // ambiguous intersection
+        }
+
+        double alpha3 = Math.acos(-Math.cos(alpha1) * Math.cos(alpha2) +
+                Math.sin(alpha1) * Math.sin(alpha2) * Math.cos(dist12));
+        double dist13 = Math.atan2(Math.sin(dist12) * Math.sin(alpha1) * Math.sin(alpha2),
+                Math.cos(alpha2) + Math.cos(alpha1) * Math.cos(alpha3));
+        double lat3 = Math.asin(Math.sin(lat1) * Math.cos(dist13) +
+                Math.cos(lat1) * Math.sin(dist13) * Math.cos(brng13));
+        double dLon13 = Math.atan2(Math.sin(brng13) * Math.sin(dist13) * Math.cos(lat1),
+                Math.cos(dist13) - Math.sin(lat1) * Math.sin(lat3));
+        double lon3 = ((lon1 + dLon13) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;  // normalise to -180..+180º
+
+        double[] point = {Math.toDegrees(lat3), Math.toDegrees(lon3)};
+        return point;
+    }
 }

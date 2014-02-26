@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import static java.lang.System.*;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 public class RouteTest {
@@ -135,10 +136,101 @@ public class RouteTest {
     }
 
     private Route getRoute(String name) throws Exception {
-        String fileName = System.getProperty("user.dir");
+        String fileName = getProperty("user.dir");
         File file = new File(fileName + "/src/test/fixtures/" + name + ".route");
         String content = FileUtils.readFileToString(file, "UTF-8");
         return new Route(content);
+    }
+
+    // http://itouchmap.com/latlong.html
+    // should snap to begining
+    // 40.661060, -73.990004
+
+    // should snap to next beginning
+    // 40.661060, -73.990004
+
+    @Test
+    public void snapToRoute_shouldSnapToBeginning() throws Exception {
+        Route myroute = getRoute("greenpoint_around_the_block");
+        myroute.getGeometry();
+        myroute.getGeometry();
+        double[] snapToBeginning = {40.661060, -73.990004};
+        assertThat(myroute.snapToRoute(snapToBeginning)).isEqualTo(myroute.getStartCoordinates());
+    }
+
+    @Test
+    public void snapToRoute_shouldSnapToNextLeg() throws Exception {
+        // these points are behind the new line
+        Route myroute = getRoute("greenpoint_around_the_block");
+        myroute.getGeometry();
+        double[] expected = {myroute.getGeometry().get(1)[0], myroute.getGeometry().get(1)[1]};
+        double[] snapToNextLeg1 = {40.659740, -73.987802};
+        assertThat(myroute.snapToRoute(snapToNextLeg1)).isEqualTo(expected);
+        myroute.rewind();
+        double[] snapToNextLeg2 = {40.659762, -73.987821};
+        assertThat(myroute.snapToRoute(snapToNextLeg2)).isEqualTo(expected);
+        myroute.rewind();
+        double[] snapToNextLeg3 = {40.659781, -73.987890};
+        assertThat(myroute.snapToRoute(snapToNextLeg3)).isEqualTo(expected);
+    }
+
+    @Test
+    public void snapToRoute_shouldAdvanceToNextLegButNotSnapToThatBeginning() throws Exception {
+        Route myroute = getRoute("greenpoint_around_the_block");
+        myroute.getGeometry();
+        for(double[] el : myroute.getGeometry()) {
+            out.println(el[0] + "," + el[1] + "," + el[2] + "," + el[3]);
+        }
+        double[] justAroundTheCorner1 = {40.659826, -73.987838};
+        double[] snappedTo1 = myroute.snapToRoute(justAroundTheCorner1);
+        assertThat(snappedTo1).isNotEqualTo(new double[] {route.getGeometry().get(1)[0], route.getGeometry().get(1)[1]});
+        assertThat(myroute.getCurrentLeg()).isEqualTo(1);
+        myroute.rewind();
+        double[] justAroundTheCorner2 = {40.659847, -73.987835};
+        double[] snappedTo2 = myroute.snapToRoute(justAroundTheCorner2);
+        assertThat(snappedTo2).isNotEqualTo(new double[] {myroute.getGeometry().get(1)[0], myroute.getGeometry().get(1)[1]});
+        assertThat(myroute.getCurrentLeg()).isEqualTo(1);
+    }
+
+    @Test
+    public void snapToRoute_shouldFindFutureLegs() throws Exception {
+        Route myroute = getRoute("greenpoint_around_the_block");
+        myroute.getGeometry();
+        for(double[] el : myroute.getGeometry()) {
+            out.println(el[4] + ": " + el[0] + "," + el[1] + "," + el[2] + "," + el[3]);
+        }
+        double[] point = {40.660785, -73.987878};
+        double[] snapped = myroute.snapToRoute(point);
+        out.println("hello: " + snapped[0] + ", " + snapped[1]);
+        assertThat(snapped).isNotNull();
+        assertThat(myroute.getCurrentLeg()).isEqualTo(2);
+    }
+
+    @Test
+    public void snapToRoute_shouldRealizeItsLost() throws Exception {
+        Route myroute = getRoute("greenpoint_around_the_block");
+        myroute.getGeometry();
+        double[] lost = {
+                40.662046, -73.987089
+        };
+        double[] snapped = myroute.snapToRoute(lost);
+        assertThat(snapped).isNull();
+    }
+
+    @Test
+    public void snapToRoute_shouldBeFinalDestination() throws Exception {
+        Route myroute = getRoute("greenpoint_around_the_block");
+        myroute.getGeometry();
+        double[] foundIt = {
+                40.661434, -73.989030
+        };
+        double[] snapped = myroute.snapToRoute(foundIt);
+        ArrayList<double[]> geometry = myroute.getGeometry();
+        double[] expected = {
+                geometry.get(geometry.size()-1)[0],
+                geometry.get(geometry.size()-1)[1]
+        };
+        assertThat(snapped).isEqualTo(expected);
     }
 
 }
