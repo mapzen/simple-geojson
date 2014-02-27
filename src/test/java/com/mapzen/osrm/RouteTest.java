@@ -142,17 +142,26 @@ public class RouteTest {
         return new Route(content);
     }
 
-    // http://itouchmap.com/latlong.html
-    // should snap to begining
-    // 40.661060, -73.990004
-
-    // should snap to next beginning
-    // 40.661060, -73.990004
+    @Test
+    public void snapToRoute_shouldStayOnLeg() throws Exception {
+        Route myroute = getRoute("greenpoint_around_the_block");
+        myroute.getGeometry();
+        double[] stayOnRoute = {
+                40.660250, -73.988105
+        };
+        for(double[] el : myroute.getGeometry()) {
+            out.println(el[4] + ", " + el[0] + "," + el[1] + "," + el[2] + "," + el[3]);
+        }
+        double[] snapped = myroute.snapToRoute(stayOnRoute);
+        System.out.println(snapped[0] + ", " + snapped[1]);
+        assertThat(myroute.getCurrentLeg()).isEqualTo(0);
+        assertThat(snapped).isNotNull();
+        assertThat(snapped).isNotEqualTo(myroute.getStartCoordinates());
+    }
 
     @Test
     public void snapToRoute_shouldSnapToBeginning() throws Exception {
         Route myroute = getRoute("greenpoint_around_the_block");
-        myroute.getGeometry();
         myroute.getGeometry();
         double[] snapToBeginning = {40.661060, -73.990004};
         assertThat(myroute.snapToRoute(snapToBeginning)).isEqualTo(myroute.getStartCoordinates());
@@ -183,6 +192,7 @@ public class RouteTest {
         }
         double[] justAroundTheCorner1 = {40.659826, -73.987838};
         double[] snappedTo1 = myroute.snapToRoute(justAroundTheCorner1);
+        out.println("snapped: " + snappedTo1[0] + ", " + snappedTo1[1]);
         assertThat(snappedTo1).isNotEqualTo(new double[] {route.getGeometry().get(1)[0], route.getGeometry().get(1)[1]});
         assertThat(myroute.getCurrentLeg()).isEqualTo(1);
         myroute.rewind();
@@ -201,9 +211,9 @@ public class RouteTest {
         }
         double[] point = {40.660785, -73.987878};
         double[] snapped = myroute.snapToRoute(point);
-        out.println("hello: " + snapped[0] + ", " + snapped[1]);
+        out.println("snapped: " + snapped[0] + ", " + snapped[1]);
         assertThat(snapped).isNotNull();
-        assertThat(myroute.getCurrentLeg()).isEqualTo(2);
+        assertThat(myroute.getCurrentLeg()).isEqualTo(4);
     }
 
     @Test
@@ -233,4 +243,15 @@ public class RouteTest {
         assertThat(snapped).isEqualTo(expected);
     }
 
+    @Test
+    public void snapToRoute_shouldHandleSharpTurn() throws Exception {
+        Route myroute = getRoute("sharp_turn");
+        myroute.getGeometry();
+        double[] aroundSharpTurn = {
+                40.687052, -73.976300
+        };
+        double[] snapped = myroute.snapToRoute(aroundSharpTurn);
+        // TODO ... handle this case
+        //assertThat(myroute.getCurrentLeg()).isEqualTo(2);
+    }
 }

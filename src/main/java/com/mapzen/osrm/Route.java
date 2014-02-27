@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.Key;
 import java.util.ArrayList;
 
 public class Route {
@@ -156,7 +157,7 @@ public class Route {
                     if(lastPair.length > 0) {
                         lastPair[KEY_BEARING] = RouteHelper.getBearing(lastPair, pair);
                     }
-                    pair[KEY_LEG_DISTANCE] = distance;
+                    lastPair[KEY_LEG_DISTANCE] = distance;
                 }
 
                 lastPair = pair;
@@ -204,7 +205,7 @@ public class Route {
 
         // if close to destination
         double distanceToDestination = distanceBetweenPoints(destination, originalPoint);
-        if (Math.floor(distanceToDestination) < 50) {
+        if (Math.floor(distanceToDestination) < 20) {
             return new double[] {
                     destination[KEY_LAT],
                     destination[KEY_LNG]
@@ -213,13 +214,14 @@ public class Route {
 
         double[] current = poly.get(currentLeg);
         double[] fixedPoint = snapTo(current, originalPoint, current[KEY_BEARING]);
-        if (fixedPoint == null) {
+        if (fixedPoint == null || (Double.isNaN(fixedPoint[0]) || Double.isNaN(fixedPoint[1]))) {
             return new double[] {current[KEY_LAT], current[KEY_LNG]};
         } else {
-            double distance = distanceBetweenPoints(originalPoint, fixedPoint);
+            double distance = distanceBetweenPoints(current, fixedPoint);
+            double bearingToOriginal = RouteHelper.getBearing(current, originalPoint);
                                                /// UGH somewhat arbritrary
-            if (Math.floor(distance) > Math.floor(10.0)
-                    || distance > current[KEY_LEG_DISTANCE]) {
+            double bearingDiff = Math.abs(bearingToOriginal - current[KEY_BEARING]);
+            if (distance > current[KEY_LEG_DISTANCE] - 5 || (distance > 30 && bearingDiff > 20.0)) {
                 ++currentLeg;
                 return snapToRoute(originalPoint);
             }
