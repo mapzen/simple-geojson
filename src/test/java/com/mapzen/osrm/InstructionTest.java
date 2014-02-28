@@ -300,31 +300,55 @@ public class InstructionTest {
     }
 
     @Test
-    public void testHeadOnFullInstruction() throws Exception {
+    public void testHeadOnFullInstructionBeforeAction() throws Exception {
         Instruction currentInstruction = getInstructionWithTurn(HEAD_ON);
-        String actual = currentInstruction.getFullInstruction();
-        assertEquals(getExpectedFullInstructionFor(currentInstruction,
-                "%s %s for %s"), actual);
+        String actual = currentInstruction.getFullInstructionBeforeAction();
+        assertThat(actual).isEqualTo(getExpectedFullInstructionBeforeActionFor(currentInstruction,
+                "%s %s for %s"));
     }
 
     @Test
-    public void testGoStraightFullInstruction() throws Exception {
+    public void testHeadOnFullInstructionAfterAction() throws Exception {
+        Instruction currentInstruction = getInstructionWithTurn(HEAD_ON);
+        String actual = currentInstruction.getFullInstructionAfterAction();
+        String expected  = "Continue on " + instruction.getName() + " for " + DistanceFormatter.format(currentInstruction.getDistance(), true);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void testGoStraightFullInstructionBeforeAction() throws Exception {
         Instruction currentInstruction = getInstructionWithTurn(GO_STRAIGHT);
-        String actual = currentInstruction.getFullInstruction();
-        assertEquals(getExpectedFullInstructionFor(currentInstruction,
-                "%s %s for %s"), actual);
+        String actual = currentInstruction.getFullInstructionBeforeAction();
+        assertThat(actual).isEqualTo(getExpectedFullInstructionBeforeActionFor(currentInstruction,
+                "%s %s for %s"));
     }
 
     @Test
-    public void testReachedYourDestinationFullInstruction() throws Exception {
+    public void testGoStraightFullInstructionAfterAction() throws Exception {
+        Instruction currentInstruction = getInstructionWithTurn(GO_STRAIGHT);
+        String actual = currentInstruction.getFullInstructionAfterAction();
+        String expected  = "Continue on " + instruction.getName() + " for " + DistanceFormatter.format(currentInstruction.getDistance(), true);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void testReachedYourDestinationFullInstructionBeforeAction() throws Exception {
         Instruction currentInstruction = getInstructionWithTurn(REACHED_YOUR_DESTINATION);
-        String actual = currentInstruction.getFullInstruction();
-        assertEquals(getExpectedFullInstructionFor(currentInstruction,
-                "%s %s"), actual);
+        String actual = currentInstruction.getFullInstructionBeforeAction();
+        assertThat(actual).isEqualTo(getExpectedFullInstructionBeforeActionFor(currentInstruction,
+                "%s %s"));
     }
 
     @Test
-    public void testOtherFullInstruction() throws Exception {
+    public void testReachedYourDestinationFullInstructionAfterAction() throws Exception {
+        Instruction currentInstruction = getInstructionWithTurn(REACHED_YOUR_DESTINATION);
+        String actual = currentInstruction.getFullInstructionAfterAction();
+        assertThat(actual).isEqualTo(getExpectedFullInstructionBeforeActionFor(currentInstruction,
+                "%s %s"));
+    }
+
+    @Test
+    public void testOtherFullInstructionBeforeAction() throws Exception {
         Instruction currentInstruction;
         String actual;
         for(int i = 0; i < decodedInstructions.length; i++) {
@@ -332,26 +356,26 @@ public class InstructionTest {
                    !decodedInstructions[i].equals(GO_STRAIGHT) &&
                        !decodedInstructions[i].equals(HEAD_ON)) {
                currentInstruction = getInstructionWithTurn(decodedInstructions[i]);
-               actual = currentInstruction.getFullInstruction();
-               assertEquals(getExpectedFullInstructionFor(currentInstruction,
-                       "%s %s and continue on for %s"), actual);
+               actual = currentInstruction.getFullInstructionBeforeAction();
+               assertThat(actual).isEqualTo(getExpectedFullInstructionBeforeActionFor(currentInstruction,
+                       "%s %s and continue on for %s"));
            }
         }
     }
 
     @Test
-    public void shouldCalculateMidpointToNext() throws Exception {
-        double[] currentPoint = {1,2};
-        instruction.setPoint(currentPoint);
-        double lat2 = 30;
-        double lng2 = 50;
-        double[] nextPoint = {lat2, lng2};
-        double[] midPoint = instruction.calculateMidpointToNext(nextPoint);
-        double[] point = instruction.getPoint();
-        double lat1 = point[0];
-        double lng1 = point[1];
-        double[] expectedMidpoint = {((lat1+lat2)/2), ((lng1+lng2)/2) };
-        assertThat(midPoint).isEqualTo(expectedMidpoint);
+    public void testOtherFullInstructionAfterAction() throws Exception {
+        Instruction currentInstruction;
+        String actual;
+        for(int i = 0; i < decodedInstructions.length; i++) {
+            if (!decodedInstructions[i].equals(REACHED_YOUR_DESTINATION) &&
+                    !decodedInstructions[i].equals(GO_STRAIGHT) &&
+                    !decodedInstructions[i].equals(HEAD_ON)) {
+                currentInstruction = getInstructionWithTurn(decodedInstructions[i]);
+                actual = currentInstruction.getFullInstructionAfterAction();
+                assertThat(actual).isEqualTo("Continue on " + currentInstruction.getName() + " for " + DistanceFormatter.format(currentInstruction.getDistance(), true));
+            }
+        }
     }
 
     @Test
@@ -366,9 +390,9 @@ public class InstructionTest {
     }
 
     @Test
-    public void getFullInstruction_shouldReturnNavigationDistance() throws Exception {
+    public void getFullInstructionBeforeAction_shouldReturnNavigationDistance() throws Exception {
         instruction.setDistance(1);
-        assertThat(instruction.getFullInstruction()).contains("now");
+        assertThat(instruction.getFullInstructionBeforeAction()).contains("now");
     }
 
     @Test
@@ -389,7 +413,8 @@ public class InstructionTest {
         return instruction;
     }
 
-    private String getExpectedFullInstructionFor(Instruction currentInstruction, String pattern) {
+    private String getExpectedFullInstructionBeforeActionFor(Instruction currentInstruction,
+            String pattern) {
         return String.format(Locale.ENGLISH, pattern,
                 currentInstruction.getHumanTurnInstruction(),
                 currentInstruction.getName(),
@@ -399,17 +424,5 @@ public class InstructionTest {
     private Instruction getInstructionWithDirection(String dir) {
         String json = "[\"10\",\"\", 1609,0,0,\"1609m\",\"" + dir + "\",\"128\"]";
         return new Instruction(new JSONArray(json));
-    }
-
-    @Test
-    public void shouldSnapTo() throws Exception {
-        double[] currentPoint = {40.660514,-73.989501};
-        double[] referencePoint = {40.661139,-73.990051};
-        instruction.setPoint(referencePoint);
-        double[] onRoad = instruction.snapTo(currentPoint, -90);
-        double lat = onRoad[0];
-        double lon = onRoad[1];
-        assertThat(lat).isEqualTo(40.660699685769025);
-        assertThat(lon).isEqualTo(-73.98930975653286);
     }
 }
