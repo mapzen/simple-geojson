@@ -4,8 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.Key;
 import java.util.ArrayList;
+import java.util.logging.Logger;
+
+import static java.lang.Math.toRadians;
 
 public class Route {
     public static final int KEY_LAT = 0;
@@ -17,6 +19,8 @@ public class Route {
     private ArrayList<Instruction> turnByTurn = null;
     private JSONArray instructions;
     private JSONObject jsonObject;
+    private int currentLeg = 0;
+    static final Logger log = Logger.getLogger("RouteLogger");
 
     public Route() {
     }
@@ -169,21 +173,15 @@ public class Route {
 
     private double distanceBetweenPoints(double[] pointA, double[] pointB) {
         double R = 6371;
-        double lat = toRadian(pointB[0] - pointA[0]);
-        double lon = toRadian(pointB[1] - pointA[1]);
+        double lat = toRadians(pointB[0] - pointA[0]);
+        double lon = toRadians(pointB[1] - pointA[1]);
         double a = Math.sin(lat / 2) * Math.sin(lat / 2) +
-                Math.cos(toRadian(pointA[0])) * Math.cos(toRadian(pointB[0])) *
+                Math.cos(toRadians(pointA[0])) * Math.cos(toRadians(pointB[0])) *
                         Math.sin(lon / 2) * Math.sin(lon / 2);
         double c = 2 * Math.asin(Math.min(1, Math.sqrt(a)));
         double d = R * c;
         return d * 1000;
     }
-
-    private double toRadian(double val) {
-        return (Math.PI / 180) * val;
-    }
-
-    private int currentLeg = 0;
 
     public int getCurrentLeg() {
         return currentLeg;
@@ -194,6 +192,11 @@ public class Route {
     }
 
     public double[] snapToRoute(double[] originalPoint) {
+        log.info("Snapping => currentLeg: " + String.valueOf(currentLeg));
+        log.info("Snapping => originalPoint: "
+                + String.valueOf(originalPoint[0]) + ", "
+                + String.valueOf(originalPoint[1]));
+
         int sizeOfPoly = poly.size();
 
         // we have exhausted options
@@ -205,6 +208,7 @@ public class Route {
 
         // if close to destination
         double distanceToDestination = distanceBetweenPoints(destination, originalPoint);
+        log.info("Snapping => distance to destination: " + String.valueOf(distanceToDestination));
         if (Math.floor(distanceToDestination) < 20) {
             return new double[] {
                     destination[KEY_LAT],
@@ -215,14 +219,19 @@ public class Route {
         double[] current = poly.get(currentLeg);
         double[] fixedPoint = snapTo(current, originalPoint, current[KEY_BEARING]);
         if (fixedPoint == null || (Double.isNaN(fixedPoint[0]) || Double.isNaN(fixedPoint[1]))) {
+            log.info("Snapping => returning current");
             return new double[] {current[KEY_LAT], current[KEY_LNG]};
         } else {
             double distance = distanceBetweenPoints(current, fixedPoint);
+            log.info("Snapping => distance between current and fixed: " + String.valueOf(distance));
             double bearingToOriginal = RouteHelper.getBearing(current, originalPoint);
+            log.info("Snapping => bearing to original: " + String.valueOf(bearingToOriginal));
                                                /// UGH somewhat arbritrary
             double bearingDiff = Math.abs(bearingToOriginal - current[KEY_BEARING]);
             if (distance > current[KEY_LEG_DISTANCE] - 5 || (distance > 30 && bearingDiff > 20.0)) {
                 ++currentLeg;
+                log.info("Snapping => incrementing and trying again");
+                log.info("Snapping => currentLeg: " + String.valueOf(currentLeg));
                 return snapToRoute(originalPoint);
             }
         }
@@ -247,13 +256,13 @@ public class Route {
 
 
     private double[] snapTo(double[] turnPoint, double[] location, double turnBearing, int offset) {
-        double lat1 = Math.toRadians(turnPoint[0]);
-        double lon1 = Math.toRadians(turnPoint[1]);
-        double lat2 = Math.toRadians(location[0]);
-        double lon2 = Math.toRadians(location[1]);
+        double lat1 = toRadians(turnPoint[0]);
+        double lon1 = toRadians(turnPoint[1]);
+        double lat2 = toRadians(location[0]);
+        double lon2 = toRadians(location[1]);
 
-        double brng13 = Math.toRadians(turnBearing);
-        double brng23 = Math.toRadians(turnBearing + offset);
+        double brng13 = toRadians(turnBearing);
+        double brng23 = toRadians(turnBearing + offset);
         double dLat = lat2 - lat1;
         double dLon = lon2 - lon1;
 
