@@ -135,7 +135,6 @@ public class Instruction {
     }
 
     public String getFullInstruction() {
-        // quick alias
         return getFullInstructionBeforeAction();
     }
 
@@ -165,69 +164,6 @@ public class Instruction {
                 point[0], point[1], getHumanTurnInstruction(), getName());
     }
 
-    public double[] calculateMidpointToNext(double[] nextPoint) {
-        double midLat = (point[0] + nextPoint[0]) / 2;
-        double midLng = (point[1] + nextPoint[1]) / 2;
-        double[] midPoint = {midLat, midLng};
-        return midPoint;
-    }
-
-    public double[] snapTo(double[] location, int offset) {
-        double lat1 = Math.toRadians(point[0]);
-        double lon1 = Math.toRadians(point[1]);
-        double lat2 = Math.toRadians(location[0]);
-        double lon2 = Math.toRadians(location[1]);
-
-        double brng13 = Math.toRadians(json.getInt(7));
-        double brng23 = Math.toRadians(json.getInt(7) + offset);
-        double dLat = lat2 - lat1;
-        double dLon = lon2 - lon1;
-
-        double dist12 = 2 * Math.asin(Math.sqrt(Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2)));
-        if (dist12 == 0) {
-            return null;
-        }
-
-        // initial/final bearings between points
-        double brngA = Math.acos((Math.sin(lat2) - Math.sin(lat1) * Math.cos(dist12)) /
-                (Math.sin(dist12) * Math.cos(lat1)));
-
-        double brngB = Math.acos((Math.sin(lat1) - Math.sin(lat2) * Math.cos(dist12)) /
-                (Math.sin(dist12) * Math.cos(lat2)));
-
-        double brng12, brng21;
-        if (Math.sin(lon2 - lon1) > 0) {
-            brng12 = brngA;
-            brng21 = 2 * Math.PI - brngB;
-        } else {
-            brng12 = 2 * Math.PI - brngA;
-            brng21 = brngB;
-        }
-
-        double alpha1 = (brng13 - brng12 + Math.PI) % (2 * Math.PI) - Math.PI;  // angle 2-1-3
-        double alpha2 = (brng21 - brng23 + Math.PI) % (2 * Math.PI) - Math.PI;  // angle 1-2-3
-
-        if (Math.sin(alpha1) == 0 && Math.sin(alpha2) == 0) {
-            return null;  // infinite intersections
-        }
-        if (Math.sin(alpha1) * Math.sin(alpha2) < 0) {
-            return null;       // ambiguous intersection
-        }
-
-        double alpha3 = Math.acos(-Math.cos(alpha1) * Math.cos(alpha2) +
-                Math.sin(alpha1) * Math.sin(alpha2) * Math.cos(dist12));
-        double dist13 = Math.atan2(Math.sin(dist12) * Math.sin(alpha1) * Math.sin(alpha2),
-                Math.cos(alpha2) + Math.cos(alpha1) * Math.cos(alpha3));
-        double lat3 = Math.asin(Math.sin(lat1) * Math.cos(dist13) +
-                Math.cos(lat1) * Math.sin(dist13) * Math.cos(brng13));
-        double dLon13 = Math.atan2(Math.sin(brng13) * Math.sin(dist13) * Math.cos(lat1),
-                Math.cos(dist13) - Math.sin(lat1) * Math.sin(lat3));
-        double lon3 = ((lon1 + dLon13) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;  // normalise to -180..+180º
-
-        double[] point = {Math.toDegrees(lat3), Math.toDegrees(lon3)};
-        return point;
-    }
     private int parseTurnInstruction(JSONArray json) {
         String turn = json.getString(0);
         String[] split = turn.split("-");

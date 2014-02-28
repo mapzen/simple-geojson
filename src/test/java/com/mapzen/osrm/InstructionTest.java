@@ -379,21 +379,6 @@ public class InstructionTest {
     }
 
     @Test
-    public void shouldCalculateMidpointToNext() throws Exception {
-        double[] currentPoint = {1,2};
-        instruction.setPoint(currentPoint);
-        double lat2 = 30;
-        double lng2 = 50;
-        double[] nextPoint = {lat2, lng2};
-        double[] midPoint = instruction.calculateMidpointToNext(nextPoint);
-        double[] point = instruction.getPoint();
-        double lat1 = point[0];
-        double lng1 = point[1];
-        double[] expectedMidpoint = {((lat1+lat2)/2), ((lng1+lng2)/2) };
-        assertThat(midPoint).isEqualTo(expectedMidpoint);
-    }
-
-    @Test
     public void testSimpleInstruction() throws Exception {
         assertThat(instruction.getSimpleInstruction()).isEqualTo("Head on 19th Street");
     }
@@ -439,17 +424,5 @@ public class InstructionTest {
     private Instruction getInstructionWithDirection(String dir) {
         String json = "[\"10\",\"\", 1609,0,0,\"1609m\",\"" + dir + "\",\"128\"]";
         return new Instruction(new JSONArray(json));
-    }
-
-    @Test
-    public void shouldSnapTo() throws Exception {
-        double[] currentPoint = {40.660514,-73.989501};
-        double[] referencePoint = {40.661139,-73.990051};
-        instruction.setPoint(referencePoint);
-        double[] onRoad = instruction.snapTo(currentPoint, -90);
-        double lat = onRoad[0];
-        double lon = onRoad[1];
-        assertThat(lat).isEqualTo(40.660699685769025);
-        assertThat(lon).isEqualTo(-73.98930975653286);
     }
 }
