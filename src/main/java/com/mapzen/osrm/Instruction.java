@@ -3,6 +3,7 @@ package com.mapzen.osrm;
 import com.mapzen.geo.DistanceFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Locale;
 
@@ -25,6 +26,9 @@ public class Instruction {
     public static final String REACHED_YOUR_DESTINATION = "You have reached your destination"; // 15;
     public static final String ENTER_AGAINST_ALLOWED_DIRECTION = "Enter against allowed direction"; // 16;
     public static final String LEAVE_AGAINST_ALLOWED_DIRECTION = "Leave against allowed direction"; // 17;
+    public static final String GEAR_JSON_INSTRUCTION = "instruction";
+    public static final String GEAR_JSON_NAME = "street";
+    public static final String GEAR_JSON_DISTANCE = "distance";
 
     public static String[] decodedInstructions = {NO_TURN, GO_STRAIGHT, TURN_SLIGHT_RIGHT,
             TURN_RIGHT, TURN_SHARP_RIGHT, U_TURN, TURN_SHARP_LEFT, TURN_LEFT, TURN_SLIGHT_LEFT,
@@ -163,6 +167,14 @@ public class Instruction {
     public String toString() {
         return String.format(Locale.US, "Instruction: (%.5f, %.5f) %s %s",
                 point[0], point[1], getHumanTurnInstruction(), getName());
+    }
+
+    public JSONObject getGearJson() {
+        JSONObject gearJson = new JSONObject();
+        gearJson.put(GEAR_JSON_INSTRUCTION, getTurnInstruction());
+        gearJson.put(GEAR_JSON_NAME, getName());
+        gearJson.put(GEAR_JSON_DISTANCE, getFormattedDistance());
+        return gearJson;
     }
 
     @Override

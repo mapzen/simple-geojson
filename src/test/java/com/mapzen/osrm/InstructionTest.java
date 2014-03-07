@@ -3,6 +3,7 @@ package com.mapzen.osrm;
 import com.mapzen.geo.DistanceFormatter;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,6 +14,9 @@ import java.util.Locale;
 
 import static com.mapzen.osrm.Instruction.ENTER_AGAINST_ALLOWED_DIRECTION;
 import static com.mapzen.osrm.Instruction.ENTER_ROUND_ABOUT;
+import static com.mapzen.osrm.Instruction.GEAR_JSON_DISTANCE;
+import static com.mapzen.osrm.Instruction.GEAR_JSON_INSTRUCTION;
+import static com.mapzen.osrm.Instruction.GEAR_JSON_NAME;
 import static com.mapzen.osrm.Instruction.GO_STRAIGHT;
 import static com.mapzen.osrm.Instruction.HEAD_ON;
 import static com.mapzen.osrm.Instruction.LEAVE_AGAINST_ALLOWED_DIRECTION;
@@ -420,7 +424,28 @@ public class InstructionTest {
         other.setPoint(new double[] { 0, 0 });
         assertThat(instruction).isNotEqualTo(other);
     }
-      
+
+    @Test
+    public void getGearJson_shouldHaveInstruction() throws Exception {
+        JSONObject jsonObject = instruction.getGearJson();
+        assertThat(jsonObject.getInt(GEAR_JSON_INSTRUCTION))
+                .isEqualTo(instruction.getTurnInstruction());
+    }
+
+    @Test
+    public void getGearJson_shouldHaveStreet() throws Exception {
+        JSONObject jsonObject = instruction.getGearJson();
+        assertThat(jsonObject.getString(GEAR_JSON_NAME))
+                .isEqualTo(instruction.getName());
+    }
+
+    @Test
+    public void getGearJson_shouldHaveDistance() throws Exception {
+        JSONObject jsonObject = instruction.getGearJson();
+        assertThat(jsonObject.getString(GEAR_JSON_DISTANCE))
+                .isEqualTo(instruction.getFormattedDistance());
+    }
+
     // Helper methods.
 
     private Instruction getInstructionWithTurn(String turn) {
