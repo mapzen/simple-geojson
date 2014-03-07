@@ -151,7 +151,8 @@ public class Instruction {
             return getFullInstructionBeforeAction();
         }
         String pattern = "Continue on %s for %s";
-        return String.format(Locale.US, pattern, getName(), DistanceFormatter.format(getDistance(), true));
+        return String.format(Locale.US, pattern, getName(), DistanceFormatter.format(getDistance(),
+                true));
     }
 
     public String getSimpleInstruction() {
@@ -162,6 +163,18 @@ public class Instruction {
     public String toString() {
         return String.format(Locale.US, "Instruction: (%.5f, %.5f) %s %s",
                 point[0], point[1], getHumanTurnInstruction(), getName());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Instruction other = (Instruction) obj;
+        return (getTurnInstruction() == other.getTurnInstruction()
+            && getBearing() == other.getBearing()
+            && getPoint()[0] == other.getPoint()[0]
+            && getPoint()[1] == other.getPoint()[1]);
     }
 
     private int parseTurnInstruction(JSONArray json) {

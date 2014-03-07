@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 
 import static com.mapzen.osrm.Instruction.ENTER_AGAINST_ALLOWED_DIRECTION;
@@ -402,6 +404,23 @@ public class InstructionTest {
                 .isEqualTo(ENTER_ROUND_ABOUT);
     }
 
+    @Test
+    public void shouldBeEqual() throws Exception {
+        Instruction instruction = new Instruction(NON_INT_TURN_JSON);
+        instruction.setPoint(new double[] {0,0});
+        Instruction other = new Instruction(NON_INT_TURN_JSON);
+        other.setPoint(new double[] {0,0});
+        assertThat(instruction).isEqualTo(other);
+    }
+
+    @Test
+    public void shouldNotBeEqual() throws Exception {
+        instruction.setPoint(new double[] {0,0});
+        Instruction other = new Instruction(NON_INT_TURN_JSON);
+        other.setPoint(new double[] { 0, 0 });
+        assertThat(instruction).isNotEqualTo(other);
+    }
+      
     // Helper methods.
 
     private Instruction getInstructionWithTurn(String turn) {
