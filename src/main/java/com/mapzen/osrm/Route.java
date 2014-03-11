@@ -187,6 +187,10 @@ public class Route {
         return currentLeg;
     }
 
+    public void setCurrentLeg(int currentLeg) {
+        this.currentLeg = currentLeg;
+    }
+
     public void rewind() {
         currentLeg = 0;
     }
