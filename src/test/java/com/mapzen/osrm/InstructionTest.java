@@ -446,6 +446,14 @@ public class InstructionTest {
                 .isEqualTo(instruction.getFormattedDistance());
     }
 
+    @Test
+    public void getGearJson_shouldFinalStep() throws Exception {
+        instruction.setTurnInstruction(15);
+        JSONObject jsonObject = instruction.getGearJson();
+        assertThat(jsonObject.getString(GEAR_JSON_NAME))
+                .isEqualTo(REACHED_YOUR_DESTINATION);
+    }
+
     // Helper methods.
 
     private Instruction getInstructionWithTurn(String turn) {
