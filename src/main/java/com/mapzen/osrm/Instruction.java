@@ -174,6 +174,9 @@ public class Instruction {
         gearJson.put(GEAR_JSON_INSTRUCTION, getTurnInstruction());
         gearJson.put(GEAR_JSON_NAME, getName());
         gearJson.put(GEAR_JSON_DISTANCE, getFormattedDistance());
+        if (getHumanTurnInstruction().equals(REACHED_YOUR_DESTINATION)) {
+            return gearJson.put(GEAR_JSON_NAME, REACHED_YOUR_DESTINATION);
+        }
         return gearJson;
     }
 
