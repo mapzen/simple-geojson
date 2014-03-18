@@ -92,7 +92,7 @@ public class RouteTest {
         points.add("Make a right on to");
         points.add("Make a right on to");
         points.add("Make a right on to");
-        points.add("You have reached your destination");
+        points.add("You have arrived");
         Route brooklynRoute = getRoute("brooklyn");
 
         ListIterator<String> expectedPoints = points.listIterator();
