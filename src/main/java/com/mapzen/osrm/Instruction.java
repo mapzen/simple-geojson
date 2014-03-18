@@ -23,7 +23,7 @@ public class Instruction {
     public static final String LEAVE_ROUND_ABOUT = "Leave round about"; // 12;
     public static final String STAY_ON_ROUND_ABOUT = "Stay on round about"; // 13;
     public static final String START_AT_END_OF_STREET = "Start at end of street"; // 14;
-    public static final String REACHED_YOUR_DESTINATION = "You have reached your destination"; // 15;
+    public static final String YOU_HAVE_ARRIVED = "You have arrived"; // 15;
     public static final String ENTER_AGAINST_ALLOWED_DIRECTION = "Enter against allowed direction"; // 16;
     public static final String LEAVE_AGAINST_ALLOWED_DIRECTION = "Leave against allowed direction"; // 17;
     public static final String GEAR_JSON_INSTRUCTION = "instruction";
@@ -33,7 +33,7 @@ public class Instruction {
     public static String[] decodedInstructions = {NO_TURN, GO_STRAIGHT, TURN_SLIGHT_RIGHT,
             TURN_RIGHT, TURN_SHARP_RIGHT, U_TURN, TURN_SHARP_LEFT, TURN_LEFT, TURN_SLIGHT_LEFT,
             REACH_VIA_POINT, HEAD_ON, ENTER_ROUND_ABOUT, LEAVE_ROUND_ABOUT, STAY_ON_ROUND_ABOUT,
-            START_AT_END_OF_STREET, REACHED_YOUR_DESTINATION, ENTER_AGAINST_ALLOWED_DIRECTION,
+            START_AT_END_OF_STREET, YOU_HAVE_ARRIVED, ENTER_AGAINST_ALLOWED_DIRECTION,
             LEAVE_AGAINST_ALLOWED_DIRECTION
     };
 
@@ -132,7 +132,7 @@ public class Instruction {
                 getHumanTurnInstruction().equals(GO_STRAIGHT)) {
             controllingGluePhrase = "for";
             pattern = "%s %s "+ controllingGluePhrase + " %s";
-        } else if (getHumanTurnInstruction().equals(REACHED_YOUR_DESTINATION)) {
+        } else if (getHumanTurnInstruction().equals(YOU_HAVE_ARRIVED)) {
             pattern = "%s %s";
         }
         return pattern;
@@ -151,7 +151,7 @@ public class Instruction {
     }
 
     public String getFullInstructionAfterAction() {
-        if (getHumanTurnInstruction().equals(REACHED_YOUR_DESTINATION)) {
+        if (getHumanTurnInstruction().equals(YOU_HAVE_ARRIVED)) {
             return getFullInstructionBeforeAction();
         }
         String pattern = "Continue on %s for %s";
@@ -174,8 +174,8 @@ public class Instruction {
         gearJson.put(GEAR_JSON_INSTRUCTION, getTurnInstruction());
         gearJson.put(GEAR_JSON_NAME, getName());
         gearJson.put(GEAR_JSON_DISTANCE, getFormattedDistance());
-        if (getHumanTurnInstruction().equals(REACHED_YOUR_DESTINATION)) {
-            return gearJson.put(GEAR_JSON_NAME, REACHED_YOUR_DESTINATION);
+        if (getHumanTurnInstruction().equals(YOU_HAVE_ARRIVED)) {
+            return gearJson.put(GEAR_JSON_NAME, YOU_HAVE_ARRIVED);
         }
         return gearJson;
     }

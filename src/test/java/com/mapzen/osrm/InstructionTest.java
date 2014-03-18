@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 
 import static com.mapzen.osrm.Instruction.ENTER_AGAINST_ALLOWED_DIRECTION;
@@ -22,7 +20,7 @@ import static com.mapzen.osrm.Instruction.HEAD_ON;
 import static com.mapzen.osrm.Instruction.LEAVE_AGAINST_ALLOWED_DIRECTION;
 import static com.mapzen.osrm.Instruction.LEAVE_ROUND_ABOUT;
 import static com.mapzen.osrm.Instruction.NO_TURN;
-import static com.mapzen.osrm.Instruction.REACHED_YOUR_DESTINATION;
+import static com.mapzen.osrm.Instruction.YOU_HAVE_ARRIVED;
 import static com.mapzen.osrm.Instruction.REACH_VIA_POINT;
 import static com.mapzen.osrm.Instruction.START_AT_END_OF_STREET;
 import static com.mapzen.osrm.Instruction.STAY_ON_ROUND_ABOUT;
@@ -175,7 +173,7 @@ public class InstructionTest {
     @Test
     public void turnInstructionHasReachedYourDestination() {
         instruction.setTurnInstruction(15);
-        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(REACHED_YOUR_DESTINATION);
+        assertThat(instruction.getHumanTurnInstruction()).isEqualTo(YOU_HAVE_ARRIVED);
     }
 
     @Test
@@ -339,7 +337,7 @@ public class InstructionTest {
 
     @Test
     public void testReachedYourDestinationFullInstructionBeforeAction() throws Exception {
-        Instruction currentInstruction = getInstructionWithTurn(REACHED_YOUR_DESTINATION);
+        Instruction currentInstruction = getInstructionWithTurn(YOU_HAVE_ARRIVED);
         String actual = currentInstruction.getFullInstructionBeforeAction();
         assertThat(actual).isEqualTo(getExpectedFullInstructionBeforeActionFor(currentInstruction,
                 "%s %s"));
@@ -347,7 +345,7 @@ public class InstructionTest {
 
     @Test
     public void testReachedYourDestinationFullInstructionAfterAction() throws Exception {
-        Instruction currentInstruction = getInstructionWithTurn(REACHED_YOUR_DESTINATION);
+        Instruction currentInstruction = getInstructionWithTurn(YOU_HAVE_ARRIVED);
         String actual = currentInstruction.getFullInstructionAfterAction();
         assertThat(actual).isEqualTo(getExpectedFullInstructionBeforeActionFor(currentInstruction,
                 "%s %s"));
@@ -358,7 +356,7 @@ public class InstructionTest {
         Instruction currentInstruction;
         String actual;
         for(int i = 0; i < decodedInstructions.length; i++) {
-           if (!decodedInstructions[i].equals(REACHED_YOUR_DESTINATION) &&
+           if (!decodedInstructions[i].equals(YOU_HAVE_ARRIVED) &&
                    !decodedInstructions[i].equals(GO_STRAIGHT) &&
                        !decodedInstructions[i].equals(HEAD_ON)) {
                currentInstruction = getInstructionWithTurn(decodedInstructions[i]);
@@ -374,7 +372,7 @@ public class InstructionTest {
         Instruction currentInstruction;
         String actual;
         for(int i = 0; i < decodedInstructions.length; i++) {
-            if (!decodedInstructions[i].equals(REACHED_YOUR_DESTINATION) &&
+            if (!decodedInstructions[i].equals(YOU_HAVE_ARRIVED) &&
                     !decodedInstructions[i].equals(GO_STRAIGHT) &&
                     !decodedInstructions[i].equals(HEAD_ON)) {
                 currentInstruction = getInstructionWithTurn(decodedInstructions[i]);
@@ -451,7 +449,7 @@ public class InstructionTest {
         instruction.setTurnInstruction(15);
         JSONObject jsonObject = instruction.getGearJson();
         assertThat(jsonObject.getString(GEAR_JSON_NAME))
-                .isEqualTo(REACHED_YOUR_DESTINATION);
+                .isEqualTo(YOU_HAVE_ARRIVED);
     }
 
     // Helper methods.
